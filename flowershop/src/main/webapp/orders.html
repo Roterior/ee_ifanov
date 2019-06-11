@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flower Shop</title>
+    <link rel="icon" href="icon.png">
+    <link rel="stylesheet" type="text/css" href="wow.css">
+</head>
+<body>
+<header>
+    <div>
+        <!-- <a href="/"><span>Login</span></a>
+        <a href="/register"><span>Registration</span></a> -->
+        <span>Flowers</span>
+    </div>
+    <div class="home">
+        <span>Flower Shop</span>
+    </div>
+</header>
+<section>
+    <div>
+        <span id="hello"></span>
+        <span id="balance"></span>
+        <span id="discount"></span>
+    </div>
+    <div>
+        <button onclick="logout()">Log Out</button>
+    </div>
+    <div>
+        <form id="findFlower">
+            <div>
+                <input name="from" id="from" type="number" placeholder="From...">
+                <input name="to" id="to" type="number" placeholder="To...">
+                <input name="title" id="name" type="search" placeholder="Search Flower...">
+                <input type="submit" value="Search">
+            </div>
+        </form>
+     </div>
+    <div>
+        <span>In the basket: </span>
+        <span id="curItems">0</span>
+        <span>items</span>
+        <button onclick="toOrders()">Buy</button>
+    </div>
+    <div id="flowersTable">
+        <table id="ftable">
+            <tbody id="tbody">
+                <tr>
+                    <td>HAHAHHA</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+<script src="script.js"></script>
+</html>

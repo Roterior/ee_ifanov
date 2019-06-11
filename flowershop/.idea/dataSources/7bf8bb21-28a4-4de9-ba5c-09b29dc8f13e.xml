@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="jdbc:h2:tcp://localhost/~/test">
+  <database-model serializer="dbm" dbms="H2" family-id="H2" format-version="4.15">
+    <root id="1">
+      <ServerVersion>1.4.196</ServerVersion>
+    </root>
+    <database id="2" parent="1" name="TEST">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </database>
+    <schema id="3" parent="2" name="FLOWERSHOP"/>
+    <schema id="4" parent="2" name="INFORMATION_SCHEMA"/>
+    <schema id="5" parent="2" name="PUBLIC">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <table id="6" parent="5" name="ACCOUNT"/>
+    <table id="7" parent="5" name="CLIENT"/>
+    <table id="8" parent="5" name="EMPLOYEE"/>
+    <table id="9" parent="5" name="EMPLOYEE_PROJECT_MAP"/>
+    <table id="10" parent="5" name="FLOWER"/>
+    <table id="11" parent="5" name="PROJECT"/>
+    <table id="12" parent="5" name="PURCHASE"/>
+    <column id="13" parent="6" name="ID">
+      <Position>1</Position>
+      <DataType>DECIMAL(10)|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="14" parent="6" name="FIRST_NAME">
+      <Position>2</Position>
+      <DataType>VARCHAR(45)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="15" parent="6" name="LAST_NAME">
+      <Position>3</Position>
+      <DataType>VARCHAR(45)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="16" parent="6" name="E_MAIL">
+      <Position>4</Position>
+      <DataType>VARCHAR(45)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="17" parent="6" name="PRIMARY_KEY_E">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="18" parent="6" name="CONSTRAINT_E">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="19" parent="7" name="LOGIN">
+      <Position>1</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="20" parent="7" name="ADDRESS">
+      <Position>2</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+    </column>
+    <column id="21" parent="7" name="BALANCE">
+      <Position>3</Position>
+      <DataType>DECIMAL(10,2)|3s</DataType>
+      <DefaultExpression>2000</DefaultExpression>
+    </column>
+    <column id="22" parent="7" name="DISCOUNT">
+      <Position>4</Position>
+      <DataType>INTEGER(10)|4s</DataType>
+      <DefaultExpression>5</DefaultExpression>
+    </column>
+    <column id="23" parent="7" name="FNAME">
+      <Position>5</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+    </column>
+    <column id="24" parent="7" name="LNAME">
+      <Position>6</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+    </column>
+    <column id="25" parent="7" name="MNAME">
+      <Position>7</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+    </column>
+    <column id="26" parent="7" name="PASSWORD">
+      <Position>8</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="27" parent="7" name="PHONENUMBER">
+      <Position>9</Position>
+      <DataType>VARCHAR(60)|12s</DataType>
+    </column>
+    <index id="28" parent="7" name="PRIMARY_KEY_76">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>LOGIN</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="29" parent="7" name="CLIENT_PK">
+      <ColNames>LOGIN</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="30" parent="8" name="ID">
+      <Position>1</Position>
+      <DataType>DECIMAL|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="31" parent="8" name="FIRSTNAME">
+      <Position>2</Position>
+      <DataType>VARCHAR(45)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="32" parent="8" name="LASTNAME">
+      <Position>3</Position>
+      <DataType>VARCHAR(45)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="33" parent="8" name="PROF_LEVEL">
+      <Position>4</Position>
+      <DataType>DECIMAL(10)|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="34" parent="8" name="PRIMARY_KEY_7">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="35" parent="8" name="CONSTRAINT_7">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="36" parent="9" name="ID">
+      <Position>1</Position>
+      <DataType>DECIMAL(10)|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="37" parent="9" name="EMPLOYEE_ID">
+      <Position>2</Position>
+      <DataType>DECIMAL(10)|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="38" parent="9" name="PROJECT_ID">
+      <Position>3</Position>
+      <DataType>DECIMAL(10)|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="39" parent="9" name="PRIMARY_KEY_D">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="40" parent="9" name="CONSTRAINT_D">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="41" parent="9" name="EMPLOYEE_PROJECT_MAP_EMPL_FK1">
+      <ColNames>ID</ColNames>
+      <RefTableName>EMPLOYEE</RefTableName>
+      <RefKeyName>CONSTRAINT_7</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <foreign-key id="42" parent="9" name="EMPLOYEE_PROJECT_MAP_PROJ_FK1">
+      <ColNames>ID</ColNames>
+      <RefTableName>PROJECT</RefTableName>
+      <RefKeyName>CONSTRAINT_1</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <column id="43" parent="10" name="NAME">
+      <Position>1</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="44" parent="10" name="PRICE">
+      <Position>2</Position>
+      <DataType>DECIMAL(10,2)|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="45" parent="10" name="QUANTITY">
+      <Position>3</Position>
+      <DataType>INTEGER(10)|4s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="46" parent="10" name="PRIMARY_KEY_B">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>NAME</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="47" parent="10" name="FLOWER_PK">
+      <ColNames>NAME</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="48" parent="11" name="ID">
+      <Position>1</Position>
+      <DataType>DECIMAL(10)|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="49" parent="11" name="NAME">
+      <Position>2</Position>
+      <DataType>VARCHAR(45)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="50" parent="11" name="DESCRIPTION">
+      <Position>3</Position>
+      <DataType>VARCHAR(100)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="51" parent="11" name="PRIMARY_KEY_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="52" parent="11" name="CONSTRAINT_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="53" parent="12" name="ID">
+      <Position>1</Position>
+      <DataType>INTEGER(10)|4s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="54" parent="12" name="CLIENTLOGIN">
+      <Position>2</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="55" parent="12" name="CLOSEDATE">
+      <Position>3</Position>
+      <DataType>DATE(8)|91s</DataType>
+      <DefaultExpression>NULL</DefaultExpression>
+    </column>
+    <column id="56" parent="12" name="CREATEDATE">
+      <Position>4</Position>
+      <DataType>DATE(8)|91s</DataType>
+      <DefaultExpression>NULL</DefaultExpression>
+    </column>
+    <column id="57" parent="12" name="STATUS">
+      <Position>5</Position>
+      <DataType>VARCHAR(255)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="58" parent="12" name="TOTALPRICE">
+      <Position>6</Position>
+      <DataType>DECIMAL(10,2)|3s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="59" parent="12" name="PRIMARY_KEY_2F">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="60" parent="12" name="PURCHASE_CLIENT_LOGIN_FK_INDEX_9">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>CLIENTLOGIN</ColNames>
+    </index>
+    <key id="61" parent="12" name="PURCHASE_PK">
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="62" parent="12" name="PURCHASE_CLIENT_LOGIN_FK">
+      <ColNames>CLIENTLOGIN</ColNames>
+      <RefTableName>CLIENT</RefTableName>
+      <RefKeyName>CLIENT_PK</RefKeyName>
+      <RefColNames>LOGIN</RefColNames>
+    </foreign-key>
+  </database-model>
+</dataSource>

@@ -1,7 +1,12 @@
 package com.accenture.bl.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Client {
 
+    @Id
     private String login;
     private String password;
     private String lName;
@@ -13,6 +18,13 @@ public class Client {
     private int discount;
 
     public Client() {}
+
+    public Client(String login, String password) {
+        this.login = login;
+        this.password = password;
+        this.balance = 1000;
+        this.discount = 5;
+    }
 
     public Client(String login, String password, String lName, String fName, String mName, String address, int phoneNumber, double balance, int discount) {
         this.login = login;
