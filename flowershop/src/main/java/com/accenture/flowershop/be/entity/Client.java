@@ -1,21 +1,24 @@
 package com.accenture.flowershop.be.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity(name = "Client")
+@Entity
 public class Client {
 
     @Id
     private String login;
+    @Column(nullable = false)
     private String password;
     private String lName;
     private String fName;
     private String mName;
     private String address;
-    private int phoneNumber;
+    private String phoneNumber;
+    @Column(nullable = false)
     private double balance;
+    @Column(nullable = false)
     private int discount;
 
     public Client() {}
@@ -27,7 +30,7 @@ public class Client {
         this.discount = 5;
     }
 
-    public Client(String login, String password, String lName, String fName, String mName, String address, int phoneNumber, double balance, int discount) {
+    public Client(String login, String password, String lName, String fName, String mName, String address, String phoneNumber) {
         this.login = login;
         this.password = password;
         this.lName = lName;
@@ -35,8 +38,8 @@ public class Client {
         this.mName = mName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.balance = balance;
-        this.discount = discount;
+        this.balance = 2000;
+        this.discount = 5;
     }
 
     public String getLogin() { return login; }
@@ -51,8 +54,8 @@ public class Client {
     public void setmName(String mName) { this.mName = mName; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
-    public int getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(int phoneNumber) { this.phoneNumber = phoneNumber; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public double getBalance() { return balance; }
     public void setBalance(double balance) { this.balance = balance; }
     public int getDiscount() { return discount; }

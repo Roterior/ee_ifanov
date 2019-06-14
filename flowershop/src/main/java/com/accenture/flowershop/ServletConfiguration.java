@@ -1,9 +1,6 @@
-package com.accenture.flowershop.app;
+package com.accenture.flowershop;
 
-import com.accenture.flowershop.fe.servlets.LoginServlet;
-import com.accenture.flowershop.fe.servlets.LogoutServlet;
-import com.accenture.flowershop.fe.servlets.RootServlet;
-import com.accenture.flowershop.fe.servlets.RegisterServlet;
+import com.accenture.flowershop.fe.servlets.*;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +32,20 @@ public class ServletConfiguration {
     @Bean
     public ServletRegistrationBean logoutServlet() {
         ServletRegistrationBean bean = new ServletRegistrationBean(new LogoutServlet(), "/logout");
+        bean.setLoadOnStartup(1);
+        return bean;
+    }
+
+    @Bean
+    public ServletRegistrationBean searchServlet() {
+        ServletRegistrationBean bean = new ServletRegistrationBean(new SearchServlet(), "/search");
+        bean.setLoadOnStartup(1);
+        return bean;
+    }
+
+    @Bean
+    public ServletRegistrationBean basketServlet() {
+        ServletRegistrationBean bean = new ServletRegistrationBean(new BasketServlet(), "/basket");
         bean.setLoadOnStartup(1);
         return bean;
     }

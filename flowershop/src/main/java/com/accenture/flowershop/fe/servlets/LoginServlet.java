@@ -1,6 +1,7 @@
 package com.accenture.flowershop.fe.servlets;
 
-import com.accenture.flowershop.be.access.ClientService;
+import com.accenture.flowershop.be.access.ClientAccessService;
+import com.accenture.flowershop.be.business.ClientService;
 import com.accenture.flowershop.be.entity.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(name = "loginServlet", urlPatterns = "/login")
+@WebServlet(urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
 
     @Autowired
@@ -28,6 +29,15 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("HI");
+
+
+//        String login = "admin";
+//        String password = "admin123";
+//        Client client = clientService.login(login, password);
+
+//        req.getContextPath();
+//        doPost(req, resp);
         RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
         view.forward(req, resp);
 //        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
@@ -43,8 +53,8 @@ public class LoginServlet extends HttpServlet {
 //            String login = request.getParameter("login");
 //            String pass = request.getParameter("password");
 ////            boolean submitButtonPressed = request.getParameter("submit") != null;
-//            if (clientService.login(login, pass) != null) {
-//                Client client = clientService.login(login, pass);
+//            if (clientAccessService.login(login, pass) != null) {
+//                Client client = clientAccessService.login(login, pass);
 //                session.setAttribute("login", client.getLogin());
 //                session.setAttribute("balance", client.getBalance());
 //                session.setAttribute("discount", client.getDiscount());
@@ -76,15 +86,31 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+//        RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
+//        view.include(req, resp);
+
         // Получаем параметры из запроса клиента
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         // Поиск по БД такого клиента
-        Client client = clientService.login(login, password);
+
+        Client client = null;
+
+
+        String act = req.getParameter("act");
+        if (act == null) {
+            //no button has been selected
+                System.out.println("НЕ НАЖАЛ КНОПКУ");
+        } else if (act.equals("Login")) {
+            System.out.println("НАЖАЛ ЛОГИН ВАУ");
+            client = clientService.login(login, password);
+        }
         // Если клиент нашелся по логину и паролю то
         if (client != null) {
             // Создаем сессию
             HttpSession session = req.getSession();
+            session.setAttribute("client", client);
             session.setAttribute("login", client.getLogin());
             session.setAttribute("balance", client.getBalance());
             session.setAttribute("discount", client.getDiscount());
@@ -99,10 +125,11 @@ public class LoginServlet extends HttpServlet {
 //            view.forward(req, resp);
         }
         else {
-            req.setAttribute("error", "Login or Password wrong");
-//            resp.sendRedirect("/login");
-            RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
-            view.forward(req, resp);
+            System.out.println("ГДЕ МОЯ ЛОГИН СТРАНИНЦА");
+            req.setAttribute("error", "Login or Password wrong!");
+            resp.sendRedirect("/login");
+//            RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
+//            view.include(req, resp);
         }
     }
 }

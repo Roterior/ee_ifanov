@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PurchaseService {
 
-    Purchase add(String login, Date createDate, double price, String status);
+    Purchase add(Purchase purchase);
 
     List<Purchase> get(String login);
 

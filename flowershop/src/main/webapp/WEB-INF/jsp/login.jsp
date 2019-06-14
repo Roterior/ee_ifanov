@@ -24,7 +24,7 @@
                 <label class="h4 font-weight-bold" for="password">Password:</label>
                 <input class="form-control" type="text" name="password" id="password">
             </div>
-            <input class="btn btn-dark" type="submit" value="Login">
+            <input class="btn btn-dark" type="submit" name="act" value="Login">
             <input class="btn btn-dark" type="button" value="Register" onclick="location.href='/register'">
             <%
                 String error = request.getAttribute("error") != null ? request.getAttribute("error").toString() : null;
