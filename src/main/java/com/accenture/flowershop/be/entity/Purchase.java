@@ -2,6 +2,8 @@ package com.accenture.flowershop.be.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Purchase {
@@ -15,6 +17,13 @@ public class Purchase {
     private Date createDate;
     private Date closeDate;
     private String status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clientLogin", insertable = false, updatable = false)
+    private Client client;
+
+//    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Flower> flowerList = new ArrayList<>();
 
     public Purchase() {}
 
@@ -39,4 +48,8 @@ public class Purchase {
     public void setCloseDate(Date closeDate) { this.closeDate = closeDate; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public Client getClient() { return client; }
+    public void setClient(Client client) { this.client = client; }
+//    public List<Flower> getFlowerList() { return flowerList; }
+//    public void setFlowerList(List<Flower> flowerList) { this.flowerList = flowerList; }
 }

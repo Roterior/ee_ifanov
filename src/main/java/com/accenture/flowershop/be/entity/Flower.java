@@ -1,7 +1,6 @@
 package com.accenture.flowershop.be.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Flower {
@@ -10,6 +9,10 @@ public class Flower {
     private String name;
     private double price;
     private int quantity;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "name", insertable = false, updatable = false)
+//    private Purchase purchase;
 
     public Flower() {}
 
@@ -25,4 +28,6 @@ public class Flower {
     public void setPrice(double price) { this.price = price; }
     public int getQuantity() { return quantity; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
+//    public Purchase getPurchase() { return purchase; }
+//    public void setPurchase(Purchase purchase) { this.purchase = purchase; }
 }

@@ -1,13 +1,13 @@
-package com.accenture.flowershop.be.access;
+package com.accenture.flowershop.be.business;
 
 import com.accenture.flowershop.be.entity.Flower;
 import java.util.List;
 
 public interface FlowerService {
 
-    Flower findByName(String name);
+    Flower getByName(String name);
 
-    List<Flower> get(String name, double from, double to);
+    List<Flower> getByNameAndPrice(String name, double from, double to);
 
     Flower updateQuantity(String name, int quantity);
 

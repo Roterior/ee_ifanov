@@ -35,18 +35,4 @@ public class ServletConfiguration {
         bean.setLoadOnStartup(1);
         return bean;
     }
-
-    @Bean
-    public ServletRegistrationBean searchServlet() {
-        ServletRegistrationBean bean = new ServletRegistrationBean(new SearchServlet(), "/search");
-        bean.setLoadOnStartup(1);
-        return bean;
-    }
-
-    @Bean
-    public ServletRegistrationBean basketServlet() {
-        ServletRegistrationBean bean = new ServletRegistrationBean(new BasketServlet(), "/basket");
-        bean.setLoadOnStartup(1);
-        return bean;
-    }
 }

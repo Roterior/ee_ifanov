@@ -20,23 +20,26 @@ public class ClientServiceImpl implements ClientService {
     public Client login(String login, String password) {
         Client client;
         try {
-            client = clientAccessService.login(login, password);
-        }
-        catch (EmptyResultDataAccessException e) {
-            System.out.println("РЕАЛЬНО НОЛЬ");
-            client = null;
-        }
-        if (client != null) {
-            return client;
-        }
-        else {
+            client = clientAccessService.get(login);
+            if (!password.equals(client.getPassword())) {
+                return null;
+            }
+        } catch (EmptyResultDataAccessException e) {
             return null;
         }
+        return client;
     }
 
     @Override
     public Client register(Client client) {
-        Client client1 = clientAccessService.register(client);
+        Client client1 = null;
+        if (client.getLogin() != null && client.getPassword() != null) {
+            try {
+                client1 = clientAccessService.add(client);
+            } catch (Exception e) {
+                return null;
+            }
+        }
         return client1;
     }
 
@@ -44,8 +47,6 @@ public class ClientServiceImpl implements ClientService {
     public Client updateBalance(String login, double balance) {
         Client client = clientAccessService.get(login);
         client.setBalance(balance);
-        Client client1 = clientAccessService.updateBalance(client);
-        return client1;
+        return clientAccessService.updateBalance(client);
     }
-
 }

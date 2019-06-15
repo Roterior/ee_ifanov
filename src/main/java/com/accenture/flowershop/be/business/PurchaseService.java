@@ -1,4 +1,4 @@
-package com.accenture.flowershop.be.access;
+package com.accenture.flowershop.be.business;
 
 import com.accenture.flowershop.be.entity.Purchase;
 import java.sql.Date;
@@ -8,7 +8,7 @@ public interface PurchaseService {
 
     Purchase add(Purchase purchase);
 
-    List<Purchase> get(String login);
+    List<Purchase> getByLogin(String login);
 
     Purchase updateStatus(int id, String login, Date closeDate);
 

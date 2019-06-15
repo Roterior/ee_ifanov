@@ -1,8 +1,8 @@
 package com.accenture.flowershop.be.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Client {
@@ -16,18 +16,19 @@ public class Client {
     private String mName;
     private String address;
     private String phoneNumber;
+    @Column(nullable = false, columnDefinition = "Decimal(10,2) default '2000.00'")
+    private double balance = 2000;
     @Column(nullable = false)
-    private double balance;
-    @Column(nullable = false)
-    private int discount;
+    private int discount = 5;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Purchase> purchaseList = new ArrayList<>();
 
     public Client() {}
 
     public Client(String login, String password) {
         this.login = login;
         this.password = password;
-        this.balance = 1000;
-        this.discount = 5;
     }
 
     public Client(String login, String password, String lName, String fName, String mName, String address, String phoneNumber) {
@@ -38,8 +39,6 @@ public class Client {
         this.mName = mName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.balance = 2000;
-        this.discount = 5;
     }
 
     public String getLogin() { return login; }
@@ -60,4 +59,6 @@ public class Client {
     public void setBalance(double balance) { this.balance = balance; }
     public int getDiscount() { return discount; }
     public void setDiscount(int discount) { this.discount = discount; }
+    public List<Purchase> getPurchaseList() { return purchaseList; }
+    public void setPurchaseList(List<Purchase> purchaseList) { this.purchaseList = purchaseList; }
 }

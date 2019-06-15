@@ -1,11 +1,9 @@
 package com.accenture.flowershop.fe.servlets;
 
-import com.accenture.flowershop.be.access.ClientAccessService;
+import com.accenture.flowershop.be.business.ClientService;
 import com.accenture.flowershop.be.entity.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +16,7 @@ import java.io.IOException;
 public class RegisterServlet extends HttpServlet {
 
     @Autowired
-    private ClientAccessService clientAccessService;
+    private ClientService clientService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -40,17 +38,14 @@ public class RegisterServlet extends HttpServlet {
         String mname = req.getParameter("mname").equals("") ? null : req.getParameter("mname");
         String phoneNumber = req.getParameter("phonenumber").equals("") ? null : req.getParameter("phonenumber");
         String address = req.getParameter("address").equals("") ? null : req.getParameter("address");
-
-        Client client = clientAccessService.register(new Client(login, password, lname, fname, mname, address, phoneNumber));
-
+        Client client = clientService.register(new Client(login, password, lname, fname, mname, address, phoneNumber));
         if (client != null) {
             req.removeAttribute("error2");
             resp.sendRedirect("/login");
         }
         else {
             req.setAttribute("error2", "Something went wrong!");
-            RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/register.jsp");
-            view.forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(req, resp);
         }
     }
 }

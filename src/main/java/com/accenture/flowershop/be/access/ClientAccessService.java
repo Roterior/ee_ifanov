@@ -4,11 +4,10 @@ import com.accenture.flowershop.be.entity.Client;
 
 public interface ClientAccessService {
 
-    Client login(String login, String password);
+    Client get(String login);
 
-    Client register(Client client);
+    Client add(Client client);
 
     Client updateBalance(Client client);
 
-    Client get(String login);
 }

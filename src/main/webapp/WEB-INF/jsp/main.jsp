@@ -2,6 +2,7 @@
 <%@ page import="com.accenture.flowershop.be.entity.Flower" %>
 <%@ page import="com.accenture.flowershop.fe.dto.BasketItem" %>
 <%@ page import="com.accenture.flowershop.be.entity.Purchase" %>
+<%@ page import="com.accenture.flowershop.be.entity.Client" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,9 +13,10 @@
     <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 </head>
 <%
-    String login = (String) request.getSession().getAttribute("login");
-    double balance = (Double) request.getSession().getAttribute("balance");
-    int discount = (Integer) request.getSession().getAttribute("discount");
+    Client client = (Client) request.getSession().getAttribute("client");
+    pageContext.setAttribute("login", client.getLogin());
+    pageContext.setAttribute("balance", client.getBalance());
+    pageContext.setAttribute("discount", client.getDiscount());
 %>
 <body style="background-color: #999">
     <div class="bg-dark">
@@ -24,6 +26,7 @@
         </div>
     </div>
     <div class="container pt-1 w-50">
+
         <span class="h5">Login: <kbd>${login}</kbd></span>
         <span class="h5">Balance: <kbd>${balance}$</kbd></span>
         <span class="h5">Discount: <kbd>${discount}%</kbd></span>
