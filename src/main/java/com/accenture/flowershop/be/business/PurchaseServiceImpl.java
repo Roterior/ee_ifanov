@@ -23,15 +23,33 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
+    public List<Purchase> getAll() {
+        return purchaseAccessService.getAll();
+    }
+
+    @Override
+    public Purchase getByIdAndLogin(int id, String login) {
+        return purchaseAccessService.getByIdAndLogin(id, login);
+    }
+
+    @Override
     public List<Purchase> getByLogin(String clientLogin) {
         return purchaseAccessService.get(clientLogin);
     }
 
     @Override
-    public Purchase updateStatus(int id, String clientLogin, Date closeDate) {
+    public Purchase updateStatus(int id, String clientLogin, Date closeDate, String status) {
         Purchase purchase = purchaseAccessService.getByIdAndLogin(id, clientLogin);
-        purchase.setStatus("paid");
+        purchase.setStatus(status);
         purchase.setCloseDate(closeDate);
         return purchaseAccessService.update(purchase);
     }
+
+    @Override
+    public Purchase updateStatusClose(int id, String clientLogin, String status) {
+        Purchase purchase = purchaseAccessService.getByIdAndLogin(id, clientLogin);
+        purchase.setStatus(status);
+        return purchaseAccessService.update(purchase);
+    }
+
 }

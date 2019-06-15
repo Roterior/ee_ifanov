@@ -25,6 +25,12 @@ public class PurchaseAccessServiceImpl implements PurchaseAccessService {
     }
 
     @Override
+    public List<Purchase> getAll() {
+        TypedQuery<Purchase> q = em.createQuery("SELECT p FROM Purchase p ORDER BY p.createDate, p.status DESC", Purchase.class);
+        return q.getResultList();
+    }
+
+    @Override
     public List<Purchase> get(String login) {
         TypedQuery<Purchase> q = em.createQuery("SELECT p FROM Purchase p WHERE p.clientLogin = :clientLogin", Purchase.class);
         q.setParameter("clientLogin", login);

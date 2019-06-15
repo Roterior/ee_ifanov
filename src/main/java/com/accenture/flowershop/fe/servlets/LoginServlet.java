@@ -43,7 +43,12 @@ public class LoginServlet extends HttpServlet {
         if (client != null) {
             session.setAttribute("client", client);
             req.removeAttribute("error");
-            resp.sendRedirect("/");
+            if (client.getLogin().equals("admin") && client.getPassword().equals("admin123")) {
+                resp.sendRedirect("/admin");
+            }
+            else {
+                resp.sendRedirect("/");
+            }
         }
         else {
             req.setAttribute("error", "Login or Password wrong!");

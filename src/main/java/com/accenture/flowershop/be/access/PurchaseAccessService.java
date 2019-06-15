@@ -7,6 +7,8 @@ public interface PurchaseAccessService {
 
     Purchase add(Purchase purchase);
 
+    List<Purchase> getAll();
+
     List<Purchase> get(String login);
 
     Purchase getByIdAndLogin(int id, String login);

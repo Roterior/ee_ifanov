@@ -35,4 +35,11 @@ public class ServletConfiguration {
         bean.setLoadOnStartup(1);
         return bean;
     }
+
+    @Bean
+    public ServletRegistrationBean adminServlet() {
+        ServletRegistrationBean bean = new ServletRegistrationBean(new AdminServlet(), "/admin");
+        bean.setLoadOnStartup(1);
+        return bean;
+    }
 }

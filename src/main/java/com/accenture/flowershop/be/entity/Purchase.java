@@ -22,7 +22,7 @@ public class Purchase {
     @JoinColumn(name = "clientLogin", insertable = false, updatable = false)
     private Client client;
 
-//    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @OneToMany(fetch = FetchType.LAZY)
 //    private List<Flower> flowerList = new ArrayList<>();
 
     public Purchase() {}
