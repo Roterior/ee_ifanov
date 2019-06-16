@@ -1,9 +1,10 @@
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.accenture.flowershop.be.entity.Flower" %>
 <%@ page import="com.accenture.flowershop.fe.dto.BasketItem" %>
 <%@ page import="com.accenture.flowershop.be.entity.Purchase" %>
 <%@ page import="com.accenture.flowershop.be.entity.Client" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,45 +14,53 @@
     <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 </head>
 <%
-    Client client = (Client) request.getSession().getAttribute("client");
+    Client client = (Client) session.getAttribute("client");
     pageContext.setAttribute("login", client.getLogin());
     pageContext.setAttribute("balance", client.getBalance());
     pageContext.setAttribute("discount", client.getDiscount());
 %>
 <body style="background-color: #999">
     <div class="bg-dark">
-        <div class="container">
-            <i class='fas fa-seedling' style='font-size:48px;color:white'></i>
-            <h3 class="text-white d-inline-block">Flower Shop</h3>
+        <div class="container d-flex justify-content-between align-items-lg-center">
+            <div class="d-flex justify-content-between align-items-lg-center">
+                <span><i class="fas fa-seedling" style='font-size:38px;color:green'></i></span>
+                <span class="text-white">Flower Shop</span>
+            </div>
+            <div class="text-white">
+                <span class="">Login: <kbd>${login}</kbd></span>
+                <span class="">Balance: <kbd>${balance}$</kbd></span>
+                <span class="">Discount: <kbd>${discount}%</kbd></span>
+                <form class="d-inline-block" action="logout" method="post">
+                    <input class="btn btn-success btn-sm" type="submit" value="Logout">
+                </form>
+            </div>
         </div>
     </div>
-    <div class="container pt-1 w-50">
-        <span class="h5">Login: <kbd>${login}</kbd></span>
-        <span class="h5">Balance: <kbd>${balance}$</kbd></span>
-        <span class="h5">Discount: <kbd>${discount}%</kbd></span>
-        <form class="d-inline-block" action="logout" method="post">
-            <input class="btn btn-dark" type="submit" value="Logout">
-        </form>
-    </div>
-    <div class="container pt-1 w-50">
-        <div>
-            <form action="/" method="get">
-                <div class="row">
-                    <div class="form-group col-sm">
-                        <input class="form-control" type="text" name="name" id="name" value="${name}" placeholder="Search...">
+    <div class="container pt-4 w-50">
+        <div class=" pb-1 pt-1 mb-2">
+            <form class="m-1" action="/" method="get">
+                <div class="d-flex justify-content-between align-items-lg-center">
+                    <span><kbd class="">Search</kbd></span>
+                    <div class="">
+                        <input class="form-control form-control-sm" type="text" name="name" id="name" value="${name}" placeholder="Search...">
                     </div>
-                    <div class="form-group col-sm">
-                        <input class="form-control" type="number" name="from" id="from" value="${from}" placeholder="From Price...">
+                    <span><kbd>From</kbd></span>
+                    <div class="">
+                        <input class="form-control form-control-sm" type="number" name="from" id="from" value="${from}" placeholder="From Price...">
                     </div>
-                    <div class="form-group col-sm">
-                        <input class="form-control" type="number" name="to" id="to" value="${to}" placeholder="To Price...">
+                    <span><kbd>To</kbd></span>
+                    <div class="">
+                        <input class="form-control form-control-sm" type="number" name="to" id="to" value="${to}" placeholder="To Price...">
                     </div>
-                    <input class="btn btn-dark h-25" type="submit" name="act" value="Search">
+                    <div class="">
+                        <input class="btn btn-success btn-sm btn-outline-dark d-inline-block" type="submit" name="act" value="Search">
+                    </div>
                 </div>
             </form>
         </div>
-        <table class="table table-sm">
-            <thead class="thead-dark">
+        <div>
+            <table class="table table-sm">
+                <thead class="thead-dark">
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Price</th>
@@ -59,28 +68,47 @@
                     <th>To Buy</th>
                     <th></th>
                 </tr>
-            </thead>
-            <tbody>
-            <%
-                List<Flower> flowers = (List<Flower>) session.getAttribute("flowersList");
-                if (flowers != null) {
-                    for (Flower flower: flowers) {
-            %>
-            <tr>
-                <form action="/" method="get">
-                    <td><input type="text" readonly value="<%=flower.getName()%>" name="name"></td>
-                    <td><input style="width: 60px" type="text" readonly value="<%=flower.getPrice()%>" name="price"></td>
-                    <td><input style="width: 60px" type="text" readonly value="<%=flower.getQuantity()%>" name="quantity"></td>
-                    <td><input style="width: 50px" type="number" name="quantitytobuy" value="1" min="1" max="<%=flower.getQuantity()%>"></td>
-                    <td><input class="btn btn-dark" type="submit" name="act" value="add"></td>
-                </form>
-            </tr>
-            <%      }
-                }
-            %>
-            </tbody>
-        </table>
-        <span>Basket Table</span>
+                </thead>
+                <tbody>
+                <%
+                    List<Flower> flowers = (List<Flower>) session.getAttribute("flowersList");
+                    if (flowers != null) {
+                        for (Flower flower: flowers) {
+                %>
+                <tr>
+                    <form action="/" method="get">
+                        <td>
+                            <kbd><%=flower.getName()%></kbd>
+                            <input type="hidden" readonly value="<%=flower.getName()%>" name="name">
+                        </td>
+                        <td>
+                            <kbd><%=flower.getPrice()%></kbd>
+                            <input type="hidden" readonly value="<%=flower.getPrice()%>" name="price">
+                        </td>
+                        <td>
+                            <kbd><%=flower.getQuantity()%></kbd>
+                            <input type="hidden" readonly value="<%=flower.getQuantity()%>" name="quantity">
+                        </td>
+                        <td>
+                            <kbd>
+                                <input class="border-0" style="width: 40px;" type="number" name="quantitytobuy" value="1" min="1" max="<%=flower.getQuantity()%>">
+                            </kbd>
+                        </td>
+                        <td><input class="btn btn-success btn-sm btn-outline-dark" type="submit" name="act" value="+"></td>
+                    </form>
+                </tr>
+                <%
+                        }
+                    }
+                %>
+                </tbody>
+            </table>
+        </div>
+        <%
+            List<BasketItem> basketItems = (List<BasketItem>) session.getAttribute("basketItemList");
+            if (basketItems != null) {
+        %>
+        <h5>Basket Table</h5>
         <table class="table table-sm">
             <thead class="thead-dark">
                 <tr>
@@ -92,58 +120,76 @@
             </thead>
             <tbody>
             <%
-                List<BasketItem> basketItems = (List<BasketItem>) session.getAttribute("basketItemList");
-                if (basketItems != null)
                     for (BasketItem basketItem: basketItems) {
             %>
             <tr>
                 <form action="basket" method="post" onclick="<%  %>">
-                    <td><%=basketItem.getName()%></td>
-                    <td><%=basketItem.getPrice()%></td>
-                    <td><%=basketItem.getGetQuantitytobuy()%></td>
-                    <td><%=basketItem.getSum()%></td>
+                    <td><kbd><%=basketItem.getName()%></kbd></td>
+                    <td><kbd><%=basketItem.getPrice()%></kbd></td>
+                    <td><kbd><%=basketItem.getGetQuantitytobuy()%></kbd></td>
+                    <td><kbd><%=basketItem.getSum()%></kbd></td>
                 </form>
             </tr>
-            <%}%>
+            <%
+                    }
+            %>
             </tbody>
         </table>
-        <form action="/" method="get">
-            <input class="btn btn-dark" type="submit" name="act" value="order">
+
+        <form class="float-right mb-2" action="/" method="get">
+            <input class="btn btn-success btn-sm btn-outline-dark" type="submit" name="act" value="Order">
             <%
                 Double sum = (Double) session.getAttribute("sum");
                 pageContext.setAttribute("sum", sum);
             %>
-            <span>Sum: ${sum}</span>
+            <span><kbd>Sum: ${sum}</kbd></span>
         </form>
         <h1></h1>
-        <span>Orders Table</span>
+        <%
+            }
+            List<Purchase> purchases = (List<Purchase>) session.getAttribute("purchaseList");
+            if (purchases != null) {
+
+        %>
+        <h5>Orders Table</h5>
         <table class="table table-sm pt-2">
             <thead class="thead-dark">
             <tr>
-                <th>Summary</th>
-                <th>Created</th>
-                <th>Closed</th>
-                <th>Status</th>
+                <th scope="col">Summary</th>
+                <th scope="col">Created</th>
+                <th scope="col">Closed</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <%
-                List<Purchase> purchases = (List<Purchase>) session.getAttribute("purchaseList");
-                if (purchases != null) {
                     for (Purchase purchase: purchases) {
             %>
             <tr>
                 <form action="/" method="get">
                     <input type="hidden" readonly name="id" value="<%=purchase.getId()%>">
-                    <td><input style="width: 80px;" type="text" readonly value="<%=purchase.getTotalPrice()%>" name="summary"></td>
-                    <td><input style="width: 90px" type="text" readonly value="<%=purchase.getCreateDate()%>" name="createdate"></td>
-                    <td><input style="width: 90px" type="text" readonly value="<%=purchase.getCloseDate() == null ? "-" : purchase.getCloseDate()%>" name="closedate"></td>
-                    <td><input style="width: 56px" type="text" readonly value="<%=purchase.getStatus()%>" name="status" ></td>
+                    <td>
+                        <kbd><%=purchase.getTotalPrice()%></kbd>
+                        <input style="width: 80px;" type="hidden" readonly value="<%=purchase.getTotalPrice()%>" name="summary">
+                    </td>
+                    <td>
+                        <kbd><%=purchase.getCreateDate()%></kbd>
+                        <input style="width: 90px" type="hidden" readonly value="<%=purchase.getCreateDate()%>" name="createdate">
+                    </td>
+                    <td>
+                        <kbd><%=purchase.getCloseDate() == null ? "-" : purchase.getCloseDate()%></kbd>
+                        <input style="width: 90px" type="hidden" readonly value="<%=purchase.getCloseDate() == null ? "-" : purchase.getCloseDate()%>" name="closedate">
+                    </td>
+                    <td>
+                        <kbd><%=purchase.getStatus()%></kbd>
+                        <input style="width: 56px" type="hidden" readonly value="<%=purchase.getStatus()%>" name="status" >
+                    </td>
                     <%
                         if (purchase.getStatus().equals("created")) {
                     %>
                     <td>
-                        <input class="btn btn-dark" type="submit" name="act" value="buy">
+                        <input class="btn btn-success btn-sm btn-outline-dark" type="submit" name="act" value="pay">
                     </td>
                     <%
                         }
@@ -152,10 +198,46 @@
             </tr>
             <%
                     }
-                }
             %>
             </tbody>
         </table>
+        <%
+            }
+        %>
+
+
+
+
+
+<%--        <%--%>
+<%--            List<Purchase> test = (List<Purchase>) session.getAttribute("purchaseList");--%>
+<%--            pageContext.setAttribute("testList", test);--%>
+<%--        %>--%>
+<%--        <table class="table table-sm text-white">--%>
+<%--            <thead class="thead-dark">--%>
+<%--                <tr>--%>
+<%--                    <th>Summary</th>--%>
+<%--                    <th>Created</th>--%>
+<%--                    <th>Closed</th>--%>
+<%--                    <th>Status</th>--%>
+<%--                </tr>--%>
+<%--            </thead>--%>
+<%--            <tbody>--%>
+<%--                <c:forEach var="item" items="${testList}" >--%>
+<%--                    <tr>--%>
+<%--                        <td><c:out value="${item.totalPrice}" /></td>--%>
+<%--                        <td><c:out value="${item.createDate}" /></td>--%>
+<%--                        <td><c:out value="${item.closeDate}" /></td>--%>
+<%--                        <td><c:out value="${item.status}" /></td>--%>
+<%--                    </tr>--%>
+<%--                </c:forEach>--%>
+<%--            </tbody>--%>
+<%--        </table>--%>
+
+
+
+
+
     </div>
 </body>
 </html>

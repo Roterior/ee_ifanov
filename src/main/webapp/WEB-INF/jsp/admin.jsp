@@ -11,15 +11,19 @@
 </head>
 <body style="background-color: #999">
     <div class="bg-dark">
-        <div class="container">
-            <i class='fas fa-seedling' style='font-size:48px;color:white'></i>
-            <h3 class="text-white d-inline-block">Flower Shop</h3>
+        <div class="container d-flex justify-content-between align-items-lg-center">
+            <div class="d-flex justify-content-between align-items-lg-center">
+                <span><i class="fas fa-seedling" style='font-size:38px;color:green'></i></span>
+                <span class="text-white">Flower Shop</span>
+            </div>
+            <div class="text-white">
+                <form class="d-inline-block" action="logout" method="post">
+                    <input class="btn btn-success btn-sm" type="submit" value="Logout">
+                </form>
+            </div>
         </div>
     </div>
-    <div class="container pt-1 w-50">
-        <form class="d-inline-block" action="logout" method="post">
-            <input class="btn btn-dark" type="submit" value="Logout">
-        </form>
+    <div class="container pt-3 w-50">
         <table class="table table-sm pt-2">
             <thead class="thead-dark">
             <tr>

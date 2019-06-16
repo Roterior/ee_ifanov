@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,23 +9,25 @@
 </head>
 <body style="background-color: #999; height: 100vh">
     <div class="bg-dark">
-        <div class="container">
-            <i class='fas fa-seedling' style='font-size:48px;color:white'></i>
-            <h3 class="text-white d-inline-block">Flower Shop</h3>
+        <div class="container d-flex justify-content-between align-items-lg-center">
+            <div class="d-flex justify-content-between align-items-lg-center">
+                <span><i class="fas fa-seedling" style='font-size:38px;color:green'></i></span>
+                <span class="text-white">Flower Shop</span>
+            </div>
         </div>
     </div>
     <div>
         <form class="container text-center pt-5 w-25" action="login" method="post">
             <div class="form-group">
-                <label class="h4 font-weight-bold" for="login">Login:</label>
+                <label class="h5 font-weight-bold" for="login">Login:</label>
                 <input class="form-control" type="text" name="login" id="login">
             </div>
             <div class="form-group">
-                <label class="h4 font-weight-bold" for="password">Password:</label>
-                <input class="form-control" type="text" name="password" id="password">
+                <label class="h5 font-weight-bold" for="password">Password:</label>
+                <input class="form-control" type="password" name="password" id="password">
             </div>
             <input class="btn btn-dark" type="submit" name="act" value="Login">
-            <input class="btn btn-dark" type="button" value="Register" onclick="location.href='/register'">
+            <input class="btn btn-dark" type="button" name="act" value="Register" onclick="location.href='/register'">
             <%
                 String error = request.getAttribute("error") != null ? request.getAttribute("error").toString() : null;
                 if (error != null) out.print("<div><kbd class=\"text-danger\">" + error + "</kbd></div>");

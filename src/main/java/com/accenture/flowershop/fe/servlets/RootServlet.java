@@ -44,11 +44,22 @@ public class RootServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Client client = (Client) session.getAttribute("client");
         if (null != client) {
-            List<Flower> flowersList = flowerService.getByNameAndPrice(null,0, 0);
-            session.setAttribute("flowersList", flowersList);
+            {
+                String name = (String) session.getAttribute("name");
+                double from = session.getAttribute("from") != null ? (Double) session.getAttribute("from") : 0;
+                double to = session.getAttribute("to") != null ? (Double) session.getAttribute("to") : 0;
+                List<Flower> flowersList = flowerService.getByNameAndPrice(name, from, to);
+                if (flowersList != null && flowersList.size() != 0) {
+                    session.setAttribute("flowersList", flowersList);
+                } else {
+                    session.setAttribute("flowersList", null);
+                }
+            }
             List<Purchase> purchaseList = purchaseService.getByLogin(client.getLogin());
-            if (purchaseList != null) {
+            if (purchaseList != null && purchaseList.size() != 0) {
                 session.setAttribute("purchaseList", purchaseList);
+            } else {
+                session.setAttribute("purchaseList", null);
             }
             String act = req.getParameter("act");
             if (act != null) {
@@ -62,9 +73,10 @@ public class RootServlet extends HttpServlet {
                         session.setAttribute("to", to);
                         List<Flower> flowersList1 = flowerService.getByNameAndPrice(searchName, from, to);
                         session.setAttribute("flowersList", flowersList1);
+                        doPost(req, resp);
                         break;
                     }
-                    case "add": {
+                    case "+": {
                         String name = req.getParameter("name").equals("") ? null : req.getParameter("name");
                         double price = req.getParameter("price").equals("") ? 0 : Double.parseDouble(req.getParameter("price"));
                         int quantity = req.getParameter("quantity").equals("") ? 0 : Integer.parseInt(req.getParameter("quantity"));
@@ -87,10 +99,11 @@ public class RootServlet extends HttpServlet {
                             double summary = session.getAttribute("sum") != null ? (double) session.getAttribute("sum") : 0;
                             summary += basketItem.getSum() - ((basketItem.getSum() * (client.getDiscount())) / 100);
                             session.setAttribute("sum", summary);
+                            doPost(req, resp);
                         }
                         break;
                     }
-                    case "order": {
+                    case "Order": {
                         List<BasketItem> basketItemList = (List<BasketItem>) session.getAttribute("basketItemList");
                         Purchase purchase = new Purchase();
                         purchase.setClientLogin(client.getLogin());
@@ -103,9 +116,7 @@ public class RootServlet extends HttpServlet {
                             sum = (double) session.getAttribute("sum");
                         }
                         if (sum > 1) {
-
 //                            Purchase purchase1 = new Purchase();
-
 //                            List<Flower> flowerList = purchase.getFlowerList();
 //                            for (BasketItem basketItem : basketItemList) {
 //                                Flower flower = new Flower();
@@ -116,17 +127,16 @@ public class RootServlet extends HttpServlet {
 //                            }
 //                            purchase.setFlowerList(flowerList);
                             Purchase purchase1 = purchaseService.add(purchase);
-
 //                            purchase1.setFlowerList();
                             List<Purchase> purchaseList1 = purchaseService.getByLogin(client.getLogin());
                             session.setAttribute("purchaseList", purchaseList1);
-
                             session.removeAttribute("basketItemList");
                             session.removeAttribute("sum");
+                            doPost(req, resp);
                         }
                         break;
                     }
-                    case "buy": {
+                    case "pay": {
                         int id = req.getParameter("id").equals("") ? 0 : Integer.parseInt(req.getParameter("id"));
                         double summary = req.getParameter("summary").equals("") ? 0 : Double.parseDouble(req.getParameter("summary"));
                         String status = "paid";
@@ -139,23 +149,27 @@ public class RootServlet extends HttpServlet {
                                 if (purchaseList != null) {
                                     session.setAttribute("purchaseList", purchaseList);
                                 }
-
                                 double finalBalance = client.getBalance() - summary;
                                 clientService.updateBalance(client.getLogin(), finalBalance);
-
                                 client.setBalance(finalBalance);
                                 session.setAttribute("client", client);
-
+                                doPost(req, resp);
                             }
                         }
                         break;
                     }
                 }
-            }
+            } else
             req.getRequestDispatcher("/WEB-INF/jsp/main.jsp").forward(req, resp);
+
         }
         else {
             resp.sendRedirect("/login");
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.sendRedirect("/");
     }
 }
