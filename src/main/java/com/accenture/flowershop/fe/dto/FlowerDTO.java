@@ -1,19 +1,13 @@
-package com.accenture.flowershop.be.entity;
+package com.accenture.flowershop.fe.dto;
 
-import javax.persistence.*;
+public class FlowerDTO {
 
-@Entity
-public class Flower {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "flower_id")
-    @SequenceGenerator(name = "flower_id", sequenceName = "FLOWER_ID_SEQ", allocationSize = 1)
     private Long id;
     private String name;
     private Double price;
     private Integer quantity;
 
-    public Flower() {}
+    public FlowerDTO() {}
 
     public Long getId() {
         return id;

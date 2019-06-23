@@ -1,0 +1,1 @@
+INSERT INTO CLIENT (LOGIN, PASSWORD, ROLE) VALUES ('admin','admin123','admin')

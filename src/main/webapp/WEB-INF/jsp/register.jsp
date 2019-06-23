@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +21,8 @@
             <div class="row">
                 <div class="form-group col-sm">
                     <label class="h4 font-weight-bold" for="login">Login:</label>
-                    <input type="text" class="form-control" id="login" name="login">
+                    <input onkeyup="checkClientLogin();" type="text" class="form-control" id="login" name="login" required>
+                    <span class="h5 text-danger" id="main"></span>
                 </div>
                 <div class="form-group col-sm">
                     <label class="h4 font-weight-bold" for="password">Password:</label>
@@ -40,22 +41,22 @@
             </div>
             <div class="row">
                 <div class="form-group col-sm">
-                    <label class="h4 font-weight-bold" for="lname">Middle name*:</label>
+                    <label class="h4 font-weight-bold" for="mname">Middle name*:</label>
                     <input type="text" class="form-control" id="mname" name="mname">
                 </div>
                 <div class="form-group col-sm">
-                    <label class="h4 font-weight-bold" for="lname">Phone number*:</label>
+                    <label class="h4 font-weight-bold" for="phonenumber">Phone number*:</label>
                     <input type="number" class="form-control" id="phonenumber" name="phonenumber">
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-sm">
-                    <label class="h4 font-weight-bold" for="lname">Address*:</label>
+                    <label class="h4 font-weight-bold" for="address">Address*:</label>
                     <input type="text" class="form-control" id="address" name="address">
                 </div>
             </div>
             <a href="login" class="btn btn-dark">Back</a>
-            <button type="submit" class="btn btn-dark">Create</button>
+            <input id="btnReg" type="submit" class="btn btn-dark" value="Create"/>
             <div><kbd>* - Fields with sign are optional</kbd></div>
             <%
                 String error = request.getAttribute("error2") != null ? request.getAttribute("error2").toString() : null;
@@ -64,4 +65,22 @@
         </form>
     </div>
 </body>
+<script>
+    function checkClientLogin() {
+        var url = "http://localhost:8080/rest/getClient/";
+        var login = document.getElementById("login").value;
+        url += login;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, false);
+        xhr.send();
+        var res = JSON.parse(xhr.responseText);
+        var text = document.getElementById("main");
+        if (res === true) {
+            text.innerHTML = "This login is already exist!";
+        }
+        else {
+            text.innerHTML = "";
+        }
+    }
+</script>
 </html>

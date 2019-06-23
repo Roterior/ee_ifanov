@@ -1,19 +1,15 @@
-package com.accenture.flowershop.be.entity;
+package com.accenture.flowershop.fe.dto;
 
-import javax.persistence.*;
+public class BasketItemDTO {
 
-@Entity
-public class Flower {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "flower_id")
-    @SequenceGenerator(name = "flower_id", sequenceName = "FLOWER_ID_SEQ", allocationSize = 1)
     private Long id;
     private String name;
     private Double price;
     private Integer quantity;
+    private Integer quantityToBuy;
+    private Double sum;
 
-    public Flower() {}
+    public BasketItemDTO(){}
 
     public Long getId() {
         return id;
@@ -45,5 +41,21 @@ public class Flower {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getQuantityToBuy() {
+        return quantityToBuy;
+    }
+
+    public void setQuantityToBuy(Integer quantityToBuy) {
+        this.quantityToBuy = quantityToBuy;
+    }
+
+    public Double getSum() {
+        return sum;
+    }
+
+    public void setSum(Double sum) {
+        this.sum = sum;
     }
 }

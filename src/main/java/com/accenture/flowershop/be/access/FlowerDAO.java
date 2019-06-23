@@ -1,15 +1,15 @@
-package com.accenture.flowershop.be.business;
+package com.accenture.flowershop.be.access;
 
 import com.accenture.flowershop.be.entity.Flower;
 import com.accenture.flowershop.be.entity.FlowerFilter;
 import java.util.List;
 
-public interface FlowerService {
-
+public interface FlowerDAO {
+    
     Flower getById(Long id);
 
     List<Flower> getByFilter(FlowerFilter flowerFilter);
 
-    Flower updateQuantity(Long id, Integer quantity);
+    Flower update(Flower flower);
 
 }

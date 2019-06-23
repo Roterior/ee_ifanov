@@ -3,10 +3,13 @@ package com.accenture.flowershop.fe.servlets;
 import com.accenture.flowershop.be.business.ClientService;
 import com.accenture.flowershop.be.business.FlowerService;
 import com.accenture.flowershop.be.business.PurchaseService;
-import com.accenture.flowershop.be.entity.Client;
 import com.accenture.flowershop.be.entity.Flower;
+import com.accenture.flowershop.be.entity.FlowerFilter;
 import com.accenture.flowershop.be.entity.Purchase;
-import com.accenture.flowershop.fe.dto.BasketItem;
+import com.accenture.flowershop.fe.dto.BasketItemDTO;
+import com.accenture.flowershop.fe.dto.ClientDTO;
+import com.accenture.flowershop.fe.dto.FlowerDTO;
+import com.accenture.flowershop.fe.dto.PurchaseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.servlet.ServletConfig;
@@ -42,20 +45,24 @@ public class RootServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        Client client = (Client) session.getAttribute("client");
+        ClientDTO client = (ClientDTO) session.getAttribute("client");
         if (null != client) {
             {
                 String name = (String) session.getAttribute("name");
                 double from = session.getAttribute("from") != null ? (Double) session.getAttribute("from") : 0;
                 double to = session.getAttribute("to") != null ? (Double) session.getAttribute("to") : 0;
-                List<Flower> flowersList = flowerService.getByNameAndPrice(name, from, to);
+                FlowerFilter flowerFilter = new FlowerFilter();
+                flowerFilter.setName(name);
+                flowerFilter.setFromPrice(from);
+                flowerFilter.setToPrice(to);
+                List<FlowerDTO> flowersList = mapF(flowerService.getByFilter(flowerFilter));
                 if (flowersList != null && flowersList.size() != 0) {
                     session.setAttribute("flowersList", flowersList);
                 } else {
                     session.setAttribute("flowersList", null);
                 }
             }
-            List<Purchase> purchaseList = purchaseService.getByLogin(client.getLogin());
+            List<PurchaseDTO> purchaseList = mapP(purchaseService.getByLogin(client.getLogin()));
             if (purchaseList != null && purchaseList.size() != 0) {
                 session.setAttribute("purchaseList", purchaseList);
             } else {
@@ -71,64 +78,110 @@ public class RootServlet extends HttpServlet {
                         session.setAttribute("name", searchName);
                         session.setAttribute("from", from);
                         session.setAttribute("to", to);
-                        List<Flower> flowersList1 = flowerService.getByNameAndPrice(searchName, from, to);
+                        FlowerFilter flowerFilter = new FlowerFilter();
+                        flowerFilter.setName(searchName);
+                        flowerFilter.setFromPrice(from);
+                        flowerFilter.setToPrice(to);
+                        List<FlowerDTO> flowersList1 = mapF(flowerService.getByFilter(flowerFilter));
                         session.setAttribute("flowersList", flowersList1);
                         doPost(req, resp);
                         break;
                     }
                     case "+": {
+                        Long id = req.getParameter("id").equals("") ? null : Long.parseLong(req.getParameter("id"));
                         String name = req.getParameter("name").equals("") ? null : req.getParameter("name");
                         double price = req.getParameter("price").equals("") ? 0 : Double.parseDouble(req.getParameter("price"));
                         int quantity = req.getParameter("quantity").equals("") ? 0 : Integer.parseInt(req.getParameter("quantity"));
-                        int quantitytobuy = req.getParameter("quantitytobuy").equals("") ? 0 : Integer.parseInt(req.getParameter("quantitytobuy"));
-                        int finalQuantity = quantity - quantitytobuy;
-                        if (quantitytobuy <= quantity && quantitytobuy > 0) {
-                            flowerService.updateQuantity(name, finalQuantity);
-                            List<BasketItem> basketItemList = new ArrayList<>();
+                        int quantityToBuy = req.getParameter("quantitytobuy").equals("") ? 0 : Integer.parseInt(req.getParameter("quantitytobuy"));
+                        if (quantityToBuy <= quantity && quantityToBuy > 0) {
+                            List<BasketItemDTO> basketItemList = new ArrayList<>();
                             if (session.getAttribute("basketItemList") != null) {
-                                basketItemList = (List<BasketItem>) session.getAttribute("basketItemList");
+                                basketItemList = (List<BasketItemDTO>) session.getAttribute("basketItemList");
                             }
-                            BasketItem basketItem = new BasketItem();
-                            basketItem.setName(name);
-                            basketItem.setPrice(price);
-                            basketItem.setGetQuantitytobuy(quantitytobuy);
-                            double sum = basketItem.getPrice() * basketItem.getGetQuantitytobuy();
-                            basketItem.setSum(sum);
-                            basketItemList.add(basketItem);
+                            boolean isFound = false;
+                            for (BasketItemDTO basketItemDTO : basketItemList) {
+                                if (basketItemDTO.getName().equals(name)) {
+                                    int tempQuantity = basketItemDTO.getQuantityToBuy() + quantityToBuy;
+                                    basketItemDTO.setQuantityToBuy(tempQuantity);
+                                    double sum = basketItemDTO.getPrice() * basketItemDTO.getQuantityToBuy();
+                                    basketItemDTO.setSum(sum);
+                                    isFound = true;
+                                    break;
+                                }
+                            }
+                            if (!isFound) {
+                                BasketItemDTO basketItem = new BasketItemDTO();
+                                basketItem.setId(id);
+                                basketItem.setName(name);
+                                basketItem.setPrice(price);
+                                basketItem.setQuantityToBuy(quantityToBuy);
+                                double sum = basketItem.getPrice() * basketItem.getQuantityToBuy();
+                                basketItem.setSum(sum);
+                                basketItemList.add(basketItem);
+                            }
+                            double summary = 0;
+                            for (BasketItemDTO basketItemDTO : basketItemList) {
+                                summary += basketItemDTO.getSum() - ((basketItemDTO.getSum() * (client.getDiscount())) / 100);
+                                session.setAttribute("sum", summary);
+                            }
                             session.setAttribute("basketItemList", basketItemList);
-                            double summary = session.getAttribute("sum") != null ? (double) session.getAttribute("sum") : 0;
-                            summary += basketItem.getSum() - ((basketItem.getSum() * (client.getDiscount())) / 100);
-                            session.setAttribute("sum", summary);
                             doPost(req, resp);
                         }
                         break;
                     }
+                    case "x": {
+                        String name = req.getParameter("name").equals("") ? null : req.getParameter("name");
+                        List<BasketItemDTO> basketItemList = new ArrayList<>();
+                        if (session.getAttribute("basketItemList") != null) {
+                            basketItemList = (List<BasketItemDTO>) session.getAttribute("basketItemList");
+                        }
+                        List<BasketItemDTO> found = new ArrayList<>();
+                        for(BasketItemDTO basketItemDTO : basketItemList){
+                            if(basketItemDTO.getName().equals(name)){
+                                found.add(basketItemDTO);
+                            }
+                        }
+                        basketItemList.removeAll(found);
+                        if (basketItemList.size() == 0) {
+                            basketItemList = null;
+                        }
+                        session.setAttribute("basketItemList", basketItemList);
+                        double summary = 0;
+                        if (basketItemList != null) {
+                            for (BasketItemDTO basketItemDTO : basketItemList) {
+                                summary += basketItemDTO.getSum() - ((basketItemDTO.getSum() * (client.getDiscount())) / 100);
+                                session.setAttribute("sum", summary);
+                            }
+                        }
+                        else {
+                            session.setAttribute("sum", null);
+                        }
+                        doPost(req, resp);
+                        break;
+                    }
                     case "Order": {
-                        List<BasketItem> basketItemList = (List<BasketItem>) session.getAttribute("basketItemList");
-                        Purchase purchase = new Purchase();
+                        PurchaseDTO purchase = new PurchaseDTO();
                         purchase.setClientLogin(client.getLogin());
                         Date date = new Date(System.currentTimeMillis());
                         purchase.setCreateDate(date);
                         purchase.setStatus("created");
                         double sum = 0;
                         if (session.getAttribute("sum") != null) {
-                            purchase.setTotalPrice(((Double) session.getAttribute("sum")));
                             sum = (double) session.getAttribute("sum");
+                            purchase.setTotalPrice(((Double) session.getAttribute("sum")));
                         }
                         if (sum > 1) {
-//                            Purchase purchase1 = new Purchase();
-//                            List<Flower> flowerList = purchase.getFlowerList();
-//                            for (BasketItem basketItem : basketItemList) {
-//                                Flower flower = new Flower();
-//                                flower.setName(basketItem.getName());
-//                                flower.setPrice(basketItem.getPrice());
-//                                flower.setQuantity(basketItem.getQuantity());
-////                                flowerList.add(flower);
-//                            }
-//                            purchase.setFlowerList(flowerList);
-                            Purchase purchase1 = purchaseService.add(purchase);
-//                            purchase1.setFlowerList();
-                            List<Purchase> purchaseList1 = purchaseService.getByLogin(client.getLogin());
+                            List<BasketItemDTO> basketItemList = (List<BasketItemDTO>) session.getAttribute("basketItemList");
+                            for (BasketItemDTO basketItemDTO : basketItemList) {
+                                int quantityBuy = basketItemDTO.getQuantityToBuy();
+                                FlowerDTO flowerDTO = map(flowerService.getById(basketItemDTO.getId()));
+                                if (flowerDTO != null) {
+                                    int finalQuantity = flowerDTO.getQuantity() - quantityBuy;
+                                    flowerService.updateQuantity(basketItemDTO.getId(), finalQuantity);
+                                }
+                            }
+                            purchaseService.add(map(purchase));
+                            List<PurchaseDTO> purchaseList1 = mapP(purchaseService.getByLogin(client.getLogin()));
                             session.setAttribute("purchaseList", purchaseList1);
                             session.removeAttribute("basketItemList");
                             session.removeAttribute("sum");
@@ -137,15 +190,14 @@ public class RootServlet extends HttpServlet {
                         break;
                     }
                     case "pay": {
-                        int id = req.getParameter("id").equals("") ? 0 : Integer.parseInt(req.getParameter("id"));
+                        Long id = req.getParameter("id").equals("") ? null : Long.parseLong(req.getParameter("id"));
                         double summary = req.getParameter("summary").equals("") ? 0 : Double.parseDouble(req.getParameter("summary"));
                         String status = "paid";
-                        Date closeDate = new Date(System.currentTimeMillis());
-                        Purchase purchase = purchaseService.getByIdAndLogin(id, client.getLogin());
-                        if (purchase.getStatus().equals("created")) {
+                        PurchaseDTO purchase = map(purchaseService.getById(id));
+                        if (purchase != null && purchase.getStatus().equals("created")) {
                             if (client.getBalance() >= summary) {
-                                purchaseService.updateStatus(id, client.getLogin(), closeDate, status);
-                                purchaseList = purchaseService.getByLogin(client.getLogin());
+                                purchaseService.updateCloseDateAndStatus(id, status);
+                                purchaseList = mapP(purchaseService.getByLogin(client.getLogin()));
                                 if (purchaseList != null) {
                                     session.setAttribute("purchaseList", purchaseList);
                                 }
@@ -161,7 +213,6 @@ public class RootServlet extends HttpServlet {
                 }
             } else
             req.getRequestDispatcher("/WEB-INF/jsp/main.jsp").forward(req, resp);
-
         }
         else {
             resp.sendRedirect("/login");
@@ -171,5 +222,62 @@ public class RootServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.sendRedirect("/");
+    }
+
+    private FlowerDTO map(Flower flower) {
+        FlowerDTO flowerDTO = new FlowerDTO();
+        if (flower != null) {
+            flowerDTO.setId(flower.getId());
+            flowerDTO.setName(flower.getName());
+            flowerDTO.setPrice(flower.getPrice());
+            flowerDTO.setQuantity(flower.getQuantity());
+        }
+        else {
+            return null;
+        }
+        return flowerDTO;
+    }
+
+    private List<FlowerDTO> mapF(List<Flower> flowerList) {
+        List<FlowerDTO> flowerDTOList = new ArrayList<>(flowerList.size());
+        for (Flower flower : flowerList) {
+            flowerDTOList.add(map(flower));
+        }
+        return flowerDTOList;
+    }
+
+    private PurchaseDTO map(Purchase purchase) {
+        PurchaseDTO purchaseDTO = new PurchaseDTO();
+        if (purchase != null) {
+            purchaseDTO.setId(purchase.getId());
+            purchaseDTO.setClientLogin(purchase.getClientLogin());
+            purchaseDTO.setTotalPrice(purchase.getTotalPrice());
+            purchaseDTO.setCreateDate(purchase.getCreateDate());
+            purchaseDTO.setCloseDate(purchase.getCloseDate());
+            purchaseDTO.setStatus(purchase.getStatus());
+        }
+        else {
+            return null;
+        }
+        return purchaseDTO;
+    }
+
+    private Purchase map(PurchaseDTO purchaseDTO) {
+        Purchase purchase = new Purchase();
+        purchase.setId(purchaseDTO.getId());
+        purchase.setClientLogin(purchaseDTO.getClientLogin());
+        purchase.setTotalPrice(purchaseDTO.getTotalPrice());
+        purchase.setCreateDate(purchaseDTO.getCreateDate());
+        purchase.setCloseDate(purchaseDTO.getCloseDate());
+        purchase.setStatus(purchaseDTO.getStatus());
+        return purchase;
+    }
+
+    private List<PurchaseDTO> mapP(List<Purchase> purchaseList) {
+        List<PurchaseDTO> purchaseDTO = new ArrayList<>(purchaseList.size());
+        for (Purchase purchase : purchaseList) {
+            purchaseDTO.add(map(purchase));
+        }
+        return purchaseDTO;
     }
 }

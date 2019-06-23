@@ -1,8 +1,8 @@
 <%@ page import="java.util.List" %>
-<%@ page import="com.accenture.flowershop.be.entity.Flower" %>
-<%@ page import="com.accenture.flowershop.fe.dto.BasketItem" %>
-<%@ page import="com.accenture.flowershop.be.entity.Purchase" %>
-<%@ page import="com.accenture.flowershop.be.entity.Client" %>
+<%@ page import="com.accenture.flowershop.fe.dto.BasketItemDTO" %>
+<%@ page import="com.accenture.flowershop.fe.dto.ClientDTO" %>
+<%@ page import="com.accenture.flowershop.fe.dto.FlowerDTO" %>
+<%@ page import="com.accenture.flowershop.fe.dto.PurchaseDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -14,10 +14,15 @@
     <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 </head>
 <%
-    Client client = (Client) session.getAttribute("client");
-    pageContext.setAttribute("login", client.getLogin());
-    pageContext.setAttribute("balance", client.getBalance());
-    pageContext.setAttribute("discount", client.getDiscount());
+    ClientDTO client = (ClientDTO) session.getAttribute("client");
+    String login = client.getLogin();
+    Double balance = client.getBalance();
+    Integer discount = client.getDiscount();
+
+
+//    pageContext.setAttribute("login", client.getLogin());
+//    pageContext.setAttribute("balance", client.getBalance());
+//    pageContext.setAttribute("discount", client.getDiscount());
 %>
 <body style="background-color: #999">
     <div class="bg-dark">
@@ -27,9 +32,9 @@
                 <span class="text-white">Flower Shop</span>
             </div>
             <div class="text-white">
-                <span class="">Login: <kbd>${login}</kbd></span>
-                <span class="">Balance: <kbd>${balance}$</kbd></span>
-                <span class="">Discount: <kbd>${discount}%</kbd></span>
+                <span class="">Login: <kbd><%=login%></kbd></span>
+                <span class="">Balance: <kbd><%=balance%>$</kbd></span>
+                <span class="">Discount: <kbd><%=discount%>%</kbd></span>
                 <form class="d-inline-block" action="logout" method="post">
                     <input class="btn btn-success btn-sm" type="submit" value="Logout">
                 </form>
@@ -71,12 +76,13 @@
                 </thead>
                 <tbody>
                 <%
-                    List<Flower> flowers = (List<Flower>) session.getAttribute("flowersList");
+                    List<FlowerDTO> flowers = (List<FlowerDTO>) session.getAttribute("flowersList");
                     if (flowers != null) {
-                        for (Flower flower: flowers) {
+                        for (FlowerDTO flower: flowers) {
                 %>
                 <tr>
                     <form action="/" method="get">
+                        <input type="hidden" readonly name="id" value="<%=flower.getId()%>">
                         <td>
                             <kbd><%=flower.getName()%></kbd>
                             <input type="hidden" readonly value="<%=flower.getName()%>" name="name">
@@ -105,7 +111,7 @@
             </table>
         </div>
         <%
-            List<BasketItem> basketItems = (List<BasketItem>) session.getAttribute("basketItemList");
+            List<BasketItemDTO> basketItems = (List<BasketItemDTO>) session.getAttribute("basketItemList");
             if (basketItems != null) {
         %>
         <h5>Basket Table</h5>
@@ -116,18 +122,32 @@
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Sum</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
             <%
-                    for (BasketItem basketItem: basketItems) {
+                    for (BasketItemDTO basketItem: basketItems) {
             %>
             <tr>
-                <form action="basket" method="post" onclick="<%  %>">
-                    <td><kbd><%=basketItem.getName()%></kbd></td>
-                    <td><kbd><%=basketItem.getPrice()%></kbd></td>
-                    <td><kbd><%=basketItem.getGetQuantitytobuy()%></kbd></td>
-                    <td><kbd><%=basketItem.getSum()%></kbd></td>
+                <form action="/" method="get">
+                    <td>
+                        <kbd><%=basketItem.getName()%></kbd>
+                        <input type="hidden" readonly value="<%=basketItem.getName()%>" name="name">
+                    </td>
+                    <td>
+                        <kbd><%=basketItem.getPrice()%></kbd>
+                        <input type="hidden" readonly value="<%=basketItem.getPrice()%>" name="price">
+                    </td>
+                    <td>
+                        <kbd><%=basketItem.getQuantityToBuy()%></kbd>
+                        <input type="hidden" readonly value="<%=basketItem.getQuantityToBuy()%>" name="quantityBuy">
+                    </td>
+                    <td>
+                        <kbd><%=basketItem.getSum()%></kbd>
+                        <input type="hidden" readonly value="<%=basketItem.getSum()%>" name="sum">
+                    </td>
+                    <td><input class="btn btn-danger btn-sm btn-outline-dark" type="submit" name="act" value="x"></td>
                 </form>
             </tr>
             <%
@@ -140,14 +160,14 @@
             <input class="btn btn-success btn-sm btn-outline-dark" type="submit" name="act" value="Order">
             <%
                 Double sum = (Double) session.getAttribute("sum");
-                pageContext.setAttribute("sum", sum);
+//                pageContext.setAttribute("sum", sum);
             %>
-            <span><kbd>Sum: ${sum}</kbd></span>
+            <span><kbd>Sum: <%=sum%></kbd></span>
         </form>
         <h1></h1>
         <%
             }
-            List<Purchase> purchases = (List<Purchase>) session.getAttribute("purchaseList");
+            List<PurchaseDTO> purchases = (List<PurchaseDTO>) session.getAttribute("purchaseList");
             if (purchases != null) {
 
         %>
@@ -164,7 +184,7 @@
             </thead>
             <tbody>
             <%
-                    for (Purchase purchase: purchases) {
+                    for (PurchaseDTO purchase: purchases) {
             %>
             <tr>
                 <form action="/" method="get">
@@ -204,10 +224,8 @@
         <%
             }
         %>
-
-
-
-
+<%--            THIS IS FOR REBUILDING CURRENT JSP CODE TO USE JSTL--%>
+<%--                IN SOME FUTURE WILL BE IMPLEMENTED--%>
 
 <%--        <%--%>
 <%--            List<Purchase> test = (List<Purchase>) session.getAttribute("purchaseList");--%>
@@ -233,11 +251,6 @@
 <%--                </c:forEach>--%>
 <%--            </tbody>--%>
 <%--        </table>--%>
-
-
-
-
-
     </div>
 </body>
 </html>

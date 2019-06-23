@@ -2,12 +2,12 @@ package com.accenture.flowershop.be.access;
 
 import com.accenture.flowershop.be.entity.Client;
 
-public interface ClientAccessService {
+public interface ClientDAO {
 
-    Client get(String login);
+    Client getByLogin(String login);
 
     Client add(Client client);
 
-    Client updateBalance(Client client);
+    Client update(Client client);
 
 }

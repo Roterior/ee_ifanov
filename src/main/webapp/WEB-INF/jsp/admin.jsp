@@ -1,6 +1,6 @@
-<%@ page import="com.accenture.flowershop.be.entity.Purchase" %>
 <%@ page import="java.util.List" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.accenture.flowershop.fe.dto.PurchaseDTO" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,23 +36,38 @@
             </thead>
             <tbody>
             <%
-                List<Purchase> purchases = (List<Purchase>) session.getAttribute("purchaseListAll");
+                List<PurchaseDTO> purchases = (List<PurchaseDTO>) session.getAttribute("purchaseListAll");
                 if (purchases != null) {
-                    for (Purchase purchase: purchases) {
+                    for (PurchaseDTO purchase: purchases) {
             %>
             <tr>
                 <form action="/admin" method="get">
                     <input type="hidden" readonly name="id" value="<%=purchase.getId()%>">
-                    <td><input style="width: 80px;" type="text" readonly value="<%=purchase.getClientLogin()%>" name="login"></td>
-                    <td><input style="width: 80px;" type="text" readonly value="<%=purchase.getTotalPrice()%>" name="summary"></td>
-                    <td><input style="width: 90px" type="text" readonly value="<%=purchase.getCreateDate()%>" name="createdate"></td>
-                    <td><input style="width: 90px" type="text" readonly value="<%=purchase.getCloseDate() == null ? "-" : purchase.getCloseDate()%>" name="closedate"></td>
-                    <td><input style="width: 56px" type="text" readonly value="<%=purchase.getStatus()%>" name="status" ></td>
+                    <td>
+                        <h5 class="font-weight-bolder"><kbd><%=purchase.getClientLogin()%></kbd></h5>
+                        <input style="width: 80px;" type="hidden" readonly value="<%=purchase.getClientLogin()%>" name="login">
+                    </td>
+                    <td>
+                        <h5><kbd><%=purchase.getTotalPrice()%></kbd></h5>
+                        <input style="width: 80px;" type="hidden" readonly value="<%=purchase.getTotalPrice()%>" name="summary">
+                    </td>
+                    <td>
+                        <h5><kbd><%=purchase.getCreateDate()%></kbd></h5>
+                        <input style="width: 90px" type="hidden" readonly value="<%=purchase.getCreateDate()%>" name="createdate">
+                    </td>
+                    <td>
+                        <h5><kbd><%=purchase.getCloseDate() == null ? "-" : purchase.getCloseDate()%></kbd></h5>
+                        <input style="width: 90px" type="hidden" readonly value="<%=purchase.getCloseDate() == null ? "-" : purchase.getCloseDate()%>" name="closedate">
+                    </td>
+                    <td>
+                        <h5><kbd><%=purchase.getStatus()%></kbd></h5>
+                        <input style="width: 56px" type="hidden" readonly value="<%=purchase.getStatus()%>" name="status" >
+                    </td>
                     <%
                         if (purchase.getStatus().equals("paid")) {
                     %>
                     <td>
-                        <input class="btn btn-dark" type="submit" name="act" value="close">
+                        <input class="btn btn-success btn-sm btn-outline-dark" type="submit" name="act" value="close">
                     </td>
                     <%
                         }

@@ -8,12 +8,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 @Repository
-public class ClientAccessServiceImpl implements ClientAccessService {
-
-    public ClientAccessServiceImpl() {}
+public class ClientDAOImpl implements ClientDAO {
 
     @PersistenceContext
-    private EntityManager em;
+    protected EntityManager em;
 
     @Transactional
     @Override
@@ -24,13 +22,13 @@ public class ClientAccessServiceImpl implements ClientAccessService {
 
     @Transactional
     @Override
-    public Client updateBalance(Client client) {
+    public Client update(Client client) {
         em.merge(client);
         return client;
     }
 
     @Override
-    public Client get(String login) {
+    public Client getByLogin(String login) {
         TypedQuery<Client> q = em.createQuery("SELECT c FROM Client c WHERE c.login = :login", Client.class);
         q.setParameter("login", login);
         return q.getSingleResult();

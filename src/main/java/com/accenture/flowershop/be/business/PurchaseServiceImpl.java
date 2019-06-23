@@ -1,6 +1,6 @@
 package com.accenture.flowershop.be.business;
 
-import com.accenture.flowershop.be.access.PurchaseAccessService;
+import com.accenture.flowershop.be.access.PurchaseDAO;
 import com.accenture.flowershop.be.entity.Purchase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,46 +10,70 @@ import java.util.List;
 @Service
 public class PurchaseServiceImpl implements PurchaseService {
 
-    @Autowired
-    public PurchaseServiceImpl(PurchaseAccessService purchaseAccessService) {
-        this.purchaseAccessService = purchaseAccessService;
-    }
+    private final PurchaseDAO purchaseDAO;
 
-    private final PurchaseAccessService purchaseAccessService;
+    @Autowired
+    public PurchaseServiceImpl(PurchaseDAO purchaseDAO) {
+        this.purchaseDAO = purchaseDAO;
+    }
 
     @Override
     public Purchase add(Purchase purchase) {
-        return purchaseAccessService.add(purchase);
+        return purchaseDAO.add(purchase);
     }
 
     @Override
     public List<Purchase> getAll() {
-        return purchaseAccessService.getAll();
+        try {
+            return purchaseDAO.getAll();
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
-    public Purchase getByIdAndLogin(int id, String login) {
-        return purchaseAccessService.getByIdAndLogin(id, login);
+    public Purchase getById(Long id) {
+        try {
+            return purchaseDAO.getById(id);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public List<Purchase> getByLogin(String clientLogin) {
-        return purchaseAccessService.get(clientLogin);
+        try {
+            return purchaseDAO.getByLogin(clientLogin);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
-    public Purchase updateStatus(int id, String clientLogin, Date closeDate, String status) {
-        Purchase purchase = purchaseAccessService.getByIdAndLogin(id, clientLogin);
-        purchase.setStatus(status);
-        purchase.setCloseDate(closeDate);
-        return purchaseAccessService.update(purchase);
+    public Purchase updateCloseDateAndStatus(Long id, String status) {
+        try {
+            Purchase purchase = purchaseDAO.getById(id);
+            purchase.setStatus(status);
+            purchase.setCloseDate(new Date(System.currentTimeMillis()));
+            return purchaseDAO.update(purchase);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
-    public Purchase updateStatusClose(int id, String clientLogin, String status) {
-        Purchase purchase = purchaseAccessService.getByIdAndLogin(id, clientLogin);
-        purchase.setStatus(status);
-        return purchaseAccessService.update(purchase);
+    public Purchase updateStatus(Long id, String status) {
+        try {
+            Purchase purchase = purchaseDAO.getById(id);
+            purchase.setStatus(status);
+            return purchaseDAO.update(purchase);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
-
 }

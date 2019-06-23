@@ -8,6 +8,8 @@ public interface ClientService {
 
     Client register(Client client);
 
-    Client updateBalance(String login, double balance);
+    Client updateBalance(String login, Double balance);
+
+    Client getByLogin(String login);
 
 }

@@ -3,15 +3,15 @@ package com.accenture.flowershop.be.access;
 import com.accenture.flowershop.be.entity.Purchase;
 import java.util.List;
 
-public interface PurchaseAccessService {
+public interface PurchaseDAO {
 
     Purchase add(Purchase purchase);
 
     List<Purchase> getAll();
 
-    List<Purchase> get(String login);
+    List<Purchase> getByLogin(String login);
 
-    Purchase getByIdAndLogin(int id, String login);
+    Purchase getById(Long id);
 
     Purchase update(Purchase purchase);
 

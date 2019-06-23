@@ -1,14 +1,9 @@
-package com.accenture.flowershop.be.entity;
+package com.accenture.flowershop.fe.dto;
 
-import javax.persistence.*;
 import java.sql.Date;
 
-@Entity
-public class Purchase {
+public class PurchaseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchase_id")
-    @SequenceGenerator(name = "purchase_id", sequenceName = "PURCHASE_ID_SEQ", allocationSize = 1)
     private Long id;
     private String clientLogin;
     private Double totalPrice;
@@ -16,11 +11,7 @@ public class Purchase {
     private Date closeDate;
     private String status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clientLogin", insertable = false, updatable = false)
-    private Client client;
-
-    public Purchase() {}
+    public PurchaseDTO() {}
 
     public Long getId() {
         return id;
@@ -68,13 +59,5 @@ public class Purchase {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 }

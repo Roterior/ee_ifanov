@@ -2,6 +2,7 @@ package com.accenture.flowershop.fe.servlets;
 
 import com.accenture.flowershop.be.business.ClientService;
 import com.accenture.flowershop.be.entity.Client;
+import com.accenture.flowershop.fe.dto.ClientDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.servlet.ServletConfig;
@@ -28,8 +29,9 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        Client client = (Client) session.getAttribute("client");
-        if (null == client) {
+        ClientDTO clientDTO = (ClientDTO) session.getAttribute("client");
+
+        if (clientDTO == null) {
             req.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(req, resp);
         } else {
             resp.sendRedirect("/");
@@ -40,13 +42,14 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login").equals("") ? null : req.getParameter("login");
         String password = req.getParameter("password").equals("") ? null : req.getParameter("password");
-        String fname = req.getParameter("fname").equals("") ? null : req.getParameter("fname");
-        String lname = req.getParameter("lname").equals("") ? null : req.getParameter("lname");
-        String mname = req.getParameter("mname").equals("") ? null : req.getParameter("mname");
+        String fName = req.getParameter("fname").equals("") ? null : req.getParameter("fname");
+        String lName = req.getParameter("lname").equals("") ? null : req.getParameter("lname");
+        String mName = req.getParameter("mname").equals("") ? null : req.getParameter("mname");
         String phoneNumber = req.getParameter("phonenumber").equals("") ? null : req.getParameter("phonenumber");
         String address = req.getParameter("address").equals("") ? null : req.getParameter("address");
-        Client client = clientService.register(new Client(login, password, lname, fname, mname, address, phoneNumber));
-        if (client != null) {
+
+        ClientDTO clientDTO = mapToClientDTO(clientService.register(new Client(login, password, lName, fName, mName, address, phoneNumber)));
+        if (clientDTO != null) {
             req.removeAttribute("error2");
             resp.sendRedirect("/login");
         }
@@ -54,5 +57,25 @@ public class RegisterServlet extends HttpServlet {
             req.setAttribute("error2", "Something went wrong!");
             req.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(req, resp);
         }
+    }
+
+    private ClientDTO mapToClientDTO(Client client) {
+        ClientDTO clientDTO = new ClientDTO();
+        if (client != null) {
+            clientDTO.setLogin(client.getLogin());
+            clientDTO.setPassword(client.getPassword());
+            clientDTO.setRole(client.getRole());
+            clientDTO.setlName(client.getlName());
+            clientDTO.setfName(client.getfName());
+            clientDTO.setmName(client.getmName());
+            clientDTO.setAddress(client.getAddress());
+            clientDTO.setPhoneNumber(client.getPhoneNumber());
+            clientDTO.setBalance(client.getBalance());
+            clientDTO.setDiscount(client.getDiscount());
+        }
+        else {
+            return null;
+        }
+        return clientDTO;
     }
 }

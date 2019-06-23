@@ -1,7 +1,8 @@
 package com.accenture.flowershop.be.business;
 
-import com.accenture.flowershop.be.access.FlowerAccessService;
+import com.accenture.flowershop.be.access.FlowerDAO;
 import com.accenture.flowershop.be.entity.Flower;
+import com.accenture.flowershop.be.entity.FlowerFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -9,35 +10,44 @@ import java.util.List;
 @Service
 public class FlowerServiceImpl implements FlowerService {
 
+    private final FlowerDAO flowerDAO;
+
     @Autowired
-    public FlowerServiceImpl(FlowerAccessService flowerAccessService) {
-        this.flowerAccessService = flowerAccessService;
+    public FlowerServiceImpl(FlowerDAO flowerDAO) {
+        this.flowerDAO = flowerDAO;
     }
 
-    private final FlowerAccessService flowerAccessService;
-
     @Override
-    public Flower getByName(String name) {
-        Flower flower = null;
-        if (name != null) {
+    public Flower getById(Long id) {
+        if (id != null) {
             try {
-                flower = flowerAccessService.get(name);
+                return flowerDAO.getById(id);
             } catch (Exception e) {
-                return null;
+                e.printStackTrace();
             }
         }
-        return flower;
+        return null;
     }
 
     @Override
-    public List<Flower> getByNameAndPrice(String name, double from, double to) {
-        return flowerAccessService.getByNameAndPrice(name, from, to);
+    public List<Flower> getByFilter(FlowerFilter flowerFilter) {
+        try {
+            return flowerDAO.getByFilter(flowerFilter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
-    public Flower updateQuantity(String name, int quantity) {
-        Flower flower = flowerAccessService.get(name);
-        flower.setQuantity(quantity);
-        return flowerAccessService.update(flower);
+    public Flower updateQuantity(Long id, Integer quantity) {
+        try {
+            Flower flower = flowerDAO.getById(id);
+            flower.setQuantity(quantity);
+            return flowerDAO.update(flower);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

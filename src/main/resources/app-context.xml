@@ -1,0 +1,22 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://cxf.apache.org/jaxws
+       http://cxf.apache.org/schemas/jaxws.xsd"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:soap="http://cxf.apache.org/bindings/soap">
+
+  <bean id="XMLConverter" class="com.accenture.flowershop.config.XMLConverter">
+    <property name="marshaller" ref="castorMarshaller" />
+    <property name="unmarshaller" ref="castorMarshaller" />
+  </bean>
+  <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
+
+<!--  <bean id="cxf" class="org.apache.cxf.transport.servlet.CXFServlet" />-->
+
+<!--  <bean id="OrderBatchService" class="com.accenture.flowershop.fe.ws.FlowersStockWebServiceImpl" />-->
+
+<!--  <jaxws:endpoint address="/op" implementor="#OrderBatchService" id="op"/>-->
+
+</beans>

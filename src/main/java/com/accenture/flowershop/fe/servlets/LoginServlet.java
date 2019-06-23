@@ -2,6 +2,7 @@ package com.accenture.flowershop.fe.servlets;
 
 import com.accenture.flowershop.be.business.ClientService;
 import com.accenture.flowershop.be.entity.Client;
+import com.accenture.flowershop.fe.dto.ClientDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.servlet.ServletConfig;
@@ -28,8 +29,8 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        Client client = (Client) session.getAttribute("client");
-        if (null == client) {
+        ClientDTO clientDTO = (ClientDTO) session.getAttribute("client");
+        if (clientDTO == null) {
             req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
         } else {
             resp.sendRedirect("/");
@@ -41,15 +42,16 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = req.getSession();
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        Client client = null;
+        ClientDTO clientDTO = null;
+
         String act = req.getParameter("act");
         if (act.equals("Login")) {
-            client = clientService.login(login, password);
+            clientDTO = mapToClientDTO(clientService.login(login, password));
         }
-        if (client != null) {
-            session.setAttribute("client", client);
+        if (clientDTO != null) {
+            session.setAttribute("client", clientDTO);
             req.removeAttribute("error");
-            if (client.getLogin().equals("admin") && client.getPassword().equals("admin123")) {
+            if (clientDTO.getRole() != null && clientDTO.getRole().equals("admin")) {
                 resp.sendRedirect("/admin");
             }
             else {
@@ -60,5 +62,25 @@ public class LoginServlet extends HttpServlet {
             req.setAttribute("error", "Login or Password wrong!");
             req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
         }
+    }
+
+    private ClientDTO mapToClientDTO(Client client) {
+        ClientDTO clientDTO = new ClientDTO();
+        if (client != null) {
+            clientDTO.setLogin(client.getLogin());
+            clientDTO.setPassword(client.getPassword());
+            clientDTO.setRole(client.getRole());
+            clientDTO.setlName(client.getlName());
+            clientDTO.setfName(client.getfName());
+            clientDTO.setmName(client.getmName());
+            clientDTO.setAddress(client.getAddress());
+            clientDTO.setPhoneNumber(client.getPhoneNumber());
+            clientDTO.setBalance(client.getBalance());
+            clientDTO.setDiscount(client.getDiscount());
+        }
+        else {
+            return null;
+        }
+        return clientDTO;
     }
 }
