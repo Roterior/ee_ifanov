@@ -6,7 +6,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>/WEB-INF/jmsContext.xml</param-value>
+    <param-value>/jmsContext.xml</param-value>
   </context-param>
 
 <!--  <listener>-->

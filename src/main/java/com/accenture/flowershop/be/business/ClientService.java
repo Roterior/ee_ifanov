@@ -12,4 +12,6 @@ public interface ClientService {
 
     Client getByLogin(String login);
 
+    Client getNewDiscount();
+
 }

@@ -42,7 +42,6 @@ public class AdminServlet extends HttpServlet {
             if (act != null) {
                 if ("close".equals(act)) {
                     Long id = req.getParameter("id").equals("") ? null : Long.parseLong(req.getParameter("id"));
-//                    String login = req.getParameter("login").equals("") ? null : req.getParameter("login");
                     String status = "closed";
 
                     PurchaseDTO purchaseDTO = mapToPurchaseDTO(purchaseService.getById(id));
@@ -54,10 +53,12 @@ public class AdminServlet extends HttpServlet {
                     session.setAttribute("purchaseListAll", purchaseDTOList);
                     doPost(req, resp);
                 }
-            } else {
+            }
+            else {
                 req.getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(req, resp);
             }
-        } else {
+        }
+        else {
             resp.sendRedirect("/login");
         }
     }

@@ -48,9 +48,11 @@ public class LoginServlet extends HttpServlet {
         if (act.equals("Login")) {
             clientDTO = mapToClientDTO(clientService.login(login, password));
         }
+
         if (clientDTO != null) {
             session.setAttribute("client", clientDTO);
             req.removeAttribute("error");
+
             if (clientDTO.getRole() != null && clientDTO.getRole().equals("admin")) {
                 resp.sendRedirect("/admin");
             }

@@ -19,6 +19,9 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public Purchase add(Purchase purchase) {
+        purchase.setCreateDate(new Date(System.currentTimeMillis()));
+        purchase.setStatus("created");
+
         return purchaseDAO.add(purchase);
     }
 
@@ -53,10 +56,10 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public Purchase updateCloseDateAndStatus(Long id, String status) {
+    public Purchase updateCloseDateAndStatus(Long id) {
         try {
             Purchase purchase = purchaseDAO.getById(id);
-            purchase.setStatus(status);
+            purchase.setStatus("paid");
             purchase.setCloseDate(new Date(System.currentTimeMillis()));
             return purchaseDAO.update(purchase);
         }

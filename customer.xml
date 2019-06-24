@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<client><balance>2000.0</balance><login>test20</login><password>gg</password><discount>5</discount></client>
+<client>
+  <balance>2000.0</balance>
+  <login>test29</login>
+  <password>gg</password>
+  <discount>5</discount>
+</client>

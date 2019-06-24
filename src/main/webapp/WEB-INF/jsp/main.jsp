@@ -18,11 +18,6 @@
     String login = client.getLogin();
     Double balance = client.getBalance();
     Integer discount = client.getDiscount();
-
-
-//    pageContext.setAttribute("login", client.getLogin());
-//    pageContext.setAttribute("balance", client.getBalance());
-//    pageContext.setAttribute("discount", client.getDiscount());
 %>
 <body style="background-color: #999">
     <div class="bg-dark">
@@ -42,6 +37,15 @@
         </div>
     </div>
     <div class="container pt-4 w-50">
+        <%
+
+        %>
+<%--        <div>--%>
+<%--            <span>NEW DISCOUNT HAS BEEN SET</span>--%>
+<%--        </div>--%>
+        <%
+
+        %>
         <div class=" pb-1 pt-1 mb-2">
             <form class="m-1" action="/" method="get">
                 <div class="d-flex justify-content-between align-items-lg-center">
@@ -51,11 +55,11 @@
                     </div>
                     <span><kbd>From</kbd></span>
                     <div class="">
-                        <input class="form-control form-control-sm" type="number" name="from" id="from" value="${from}" placeholder="From Price...">
+                        <input class="form-control form-control-sm" type="number" name="from" id="from" value="${from}" min="0" placeholder="From Price...">
                     </div>
                     <span><kbd>To</kbd></span>
                     <div class="">
-                        <input class="form-control form-control-sm" type="number" name="to" id="to" value="${to}" placeholder="To Price...">
+                        <input class="form-control form-control-sm" type="number" name="to" id="to" value="${to}" min="0" placeholder="To Price...">
                     </div>
                     <div class="">
                         <input class="btn btn-success btn-sm btn-outline-dark d-inline-block" type="submit" name="act" value="Search">
@@ -160,7 +164,6 @@
             <input class="btn btn-success btn-sm btn-outline-dark" type="submit" name="act" value="Order">
             <%
                 Double sum = (Double) session.getAttribute("sum");
-//                pageContext.setAttribute("sum", sum);
             %>
             <span><kbd>Sum: <%=sum%></kbd></span>
         </form>
@@ -169,7 +172,6 @@
             }
             List<PurchaseDTO> purchases = (List<PurchaseDTO>) session.getAttribute("purchaseList");
             if (purchases != null) {
-
         %>
         <h5>Orders Table</h5>
         <table class="table table-sm pt-2">
@@ -224,8 +226,8 @@
         <%
             }
         %>
-<%--            THIS IS FOR REBUILDING CURRENT JSP CODE TO USE JSTL--%>
-<%--                IN SOME FUTURE WILL BE IMPLEMENTED--%>
+<%--            THIS IS FOR REBUILDING CURRENT JSP CODE TO USE JSTL       --%>
+<%--                     IN SOME FUTURE WILL BE IMPLEMENTED               --%>
 
 <%--        <%--%>
 <%--            List<Purchase> test = (List<Purchase>) session.getAttribute("purchaseList");--%>

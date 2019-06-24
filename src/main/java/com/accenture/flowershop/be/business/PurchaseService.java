@@ -13,7 +13,7 @@ public interface PurchaseService {
 
     List<Purchase> getByLogin(String login);
 
-    Purchase updateCloseDateAndStatus(Long id, String status);
+    Purchase updateCloseDateAndStatus(Long id);
 
     Purchase updateStatus(Long id, String status);
 }
