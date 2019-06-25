@@ -7,21 +7,12 @@ import com.accenture.flowershop.be.entity.Client;
 import com.accenture.flowershop.be.entity.Flower;
 import com.accenture.flowershop.be.entity.FlowerFilter;
 import com.accenture.flowershop.be.entity.Purchase;
-import com.accenture.flowershop.config.ApplicationContextConfig;
-import com.accenture.flowershop.config.JmsConfig;
-import com.accenture.flowershop.config.MessageReceiver;
 import com.accenture.flowershop.fe.dto.BasketItemDTO;
 import com.accenture.flowershop.fe.dto.ClientDTO;
 import com.accenture.flowershop.fe.dto.FlowerDTO;
 import com.accenture.flowershop.fe.dto.PurchaseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.Message;
-import javax.jms.TextMessage;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,9 +36,6 @@ public class RootServlet extends HttpServlet {
     @Autowired
     private PurchaseService purchaseService;
 
-    @Autowired
-    private ConnectionFactory connectionFactory;
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -61,24 +49,11 @@ public class RootServlet extends HttpServlet {
 
         if (null != client) {
 
-
-            JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
-            String queueName = "IN_QUEUE";
-            Message message = jmsTemplate.receive(queueName);
-            TextMessage textMessage = (TextMessage) message;
-            try {
-                String text = textMessage.getText();
-                System.out.println("NEW MSG IS " + text);
+            Integer newDiscount = clientService.getNewDiscount(client.getLogin());
+            if (newDiscount != null) {
+                client.setDiscount(newDiscount);
+                session.setAttribute("client", client);
             }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-//            clientService.getNewDiscount();
-//            ClientDTO clientDTO = mapToClientDTO(clientService.getNewDiscount());
-//            System.out.println("DISCOUNT CLIENT IS " + clientDTO.getLogin());
-
 
             String searchSesName = (String) session.getAttribute("name");
             double searchSesFrom = session.getAttribute("from") != null ? (Double) session.getAttribute("from") : 0;
@@ -272,26 +247,6 @@ public class RootServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.sendRedirect("/");
-    }
-
-    private ClientDTO mapToClientDTO(Client client) {
-        ClientDTO clientDTO = new ClientDTO();
-        if (client != null) {
-            clientDTO.setLogin(client.getLogin());
-            clientDTO.setPassword(client.getPassword());
-            clientDTO.setfName(client.getfName());
-            clientDTO.setmName(client.getmName());
-            clientDTO.setlName(client.getlName());
-            clientDTO.setRole(client.getRole());
-            clientDTO.setPhoneNumber(client.getPhoneNumber());
-            clientDTO.setAddress(client.getAddress());
-            clientDTO.setBalance(client.getBalance());
-            clientDTO.setDiscount(client.getDiscount());
-        }
-        else {
-            return null;
-        }
-        return clientDTO;
     }
 
     private FlowerDTO mapToFlowerDTO(Flower flower) {

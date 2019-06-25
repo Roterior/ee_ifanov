@@ -11,12 +11,7 @@
     <property name="marshaller" ref="castorMarshaller" />
     <property name="unmarshaller" ref="castorMarshaller" />
   </bean>
+
   <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
-
-<!--  <bean id="cxf" class="org.apache.cxf.transport.servlet.CXFServlet" />-->
-
-<!--  <bean id="OrderBatchService" class="com.accenture.flowershop.fe.ws.FlowersStockWebServiceImpl" />-->
-
-<!--  <jaxws:endpoint address="/op" implementor="#OrderBatchService" id="op"/>-->
 
 </beans>

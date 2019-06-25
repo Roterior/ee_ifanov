@@ -7,21 +7,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
+import javax.jms.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
+import java.util.Enumeration;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
     private final ClientDAO clientDAO;
+    private final ConnectionFactory connectionFactory;
     private static final String XML_FILE_NAME = "C:\\Users\\alexandr.ifanov\\Documents\\GitHub\\ee_ifanov\\customer.xml";
 
     @Autowired
-    public ClientServiceImpl(ClientDAO clientDAO) {
+    public ClientServiceImpl(ClientDAO clientDAO, ConnectionFactory connectionFactory) {
         this.clientDAO = clientDAO;
+        this.connectionFactory = connectionFactory;
     }
 
     @Override
@@ -48,7 +53,6 @@ public class ClientServiceImpl implements ClientService {
 
                 if (tempClient != null) {
 
-
                     ApplicationContext appContext = new ClassPathXmlApplicationContext("app-context.xml");
                     XMLConverter converter = (XMLConverter) appContext.getBean("XMLConverter");
                     converter.convertFromObjectToXML(tempClient, XML_FILE_NAME);
@@ -66,26 +70,13 @@ public class ClientServiceImpl implements ClientService {
                         String xml2String = sb.toString();
                         bufReader.close();
 
-//                        ApplicationContext jmsContext = new ClassPathXmlApplicationContext("jmsContext.xml");
-//                        SimpleMessageSender messageSender = (SimpleMessageSender) jmsContext.getBean("simpleMessageSender");
-//                        messageSender.sendMessage(xml2String);
-
                         AnnotationConfigApplicationContext jmsContext = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
                         MessageSender ms = jmsContext.getBean(MessageSender.class);
                         ms.sendMessage("OUT_QUEUE", xml2String);
-
                     }
                     catch (Exception e) {
                         e.printStackTrace();
                     }
-
-//                    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(JmsConfig.class);
-//                    String queueName = "OUT_QUEUE";
-//                    MessageReceiver mr = context.getBean(MessageReceiver.class);
-//                    mr.receiveMessage(queueName);
-
-
-
                 }
                 return tempClient;
             }
@@ -117,17 +108,80 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getNewDiscount() {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
-        String queueName = "IN_QUEUE";
-        MessageReceiver mr = context.getBean(MessageReceiver.class);
-        mr.receiveMessage(queueName);
+    public Integer getNewDiscount(String login) {
+        Client clientQueue = null;
 
-//        if (mr.receiveMessage(queueName) != null) {
-//            String msg = mr.receiveMessage(queueName);
-//            System.out.println("MESSAGE IS " + msg);
-//        }
+        try {
+            if (getQueueSize() > 0) {
+                JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
+                String queueName = "IN_QUEUE";
+                Message message = jmsTemplate.receive(queueName);
+                TextMessage textMessage = (TextMessage) message;
+                String text = textMessage.getText();
 
-        return null;
+                JAXBContext jaxbContext;
+                try {
+                    jaxbContext = JAXBContext.newInstance(Client.class);
+                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                    clientQueue = (Client) jaxbUnmarshaller.unmarshal(new StringReader(text));
+
+                    if (login.equals(clientQueue.getLogin())) {
+                        Client client1 = clientDAO.getByLogin(login);
+                        client1.setDiscount(clientQueue.getDiscount());
+                        clientDAO.update(client1);
+                    }
+                }
+                catch (JAXBException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return clientQueue != null ? clientQueue.getDiscount() : null;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private int getQueueSize() {
+        Connection connection = null;
+        Session session = null;
+        int count = 0;
+
+        try {
+            connection = connectionFactory.createConnection("admin", "admin");
+            connection.start();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            Destination destination = session.createQueue("IN_QUEUE");
+            QueueBrowser browser = session.createBrowser((Queue) destination);
+            Enumeration elems = browser.getEnumeration();
+
+            while (elems.hasMoreElements()) {
+                elems.nextElement();
+                count++;
+            }
+        }
+        catch (JMSException ex) {
+            ex.printStackTrace();
+        }
+        finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return count;
     }
 }

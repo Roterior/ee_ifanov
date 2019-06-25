@@ -1,9 +1,11 @@
 package com.accenture.flowershop.be.entity;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement(name = "client")
 @Entity
 public class Client {
 
