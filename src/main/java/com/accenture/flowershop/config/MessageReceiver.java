@@ -28,10 +28,8 @@ public class MessageReceiver {
         try {
             String text = textMessage.getText();
             System.out.println("received: " + text);
-//            return text;
         } catch (JMSException e) {
             e.printStackTrace();
-//            return null;
         }
     }
 }

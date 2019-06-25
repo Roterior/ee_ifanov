@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +18,7 @@
         </div>
     </div>
     <div>
-        <form class="container text-center pt-5 w-25" action="login" method="post">
+        <form class="container text-center pt-5 w-25" action="login" method="get">
             <div class="form-group">
                 <label class="h5 font-weight-bold" for="login">Login:</label>
                 <input class="form-control" type="text" name="login" id="login">
@@ -28,10 +29,9 @@
             </div>
             <input class="btn btn-dark" type="submit" name="act" value="Login">
             <input class="btn btn-dark" type="button" name="act" value="Register" onclick="location.href='/register'">
-            <%
-                String error = request.getAttribute("error") != null ? request.getAttribute("error").toString() : null;
-                if (error != null) out.print("<div><kbd class=\"text-danger\">" + error + "</kbd></div>");
-            %>
+            <c:if test="${error ne null}">
+                <div><kbd class="text-danger">${error}</kbd></div>
+            </c:if>
         </form>
     </div>
 </body>

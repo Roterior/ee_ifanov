@@ -54,7 +54,7 @@ public class ClientServiceImpl implements ClientService {
                 if (tempClient != null) {
 
                     ApplicationContext appContext = new ClassPathXmlApplicationContext("app-context.xml");
-                    XMLConverter converter = (XMLConverter) appContext.getBean("XMLConverter");
+                    XMLConverter converter = (XMLConverter) appContext.getBean("xmlConverter");
                     converter.convertFromObjectToXML(tempClient, XML_FILE_NAME);
 
                     try {

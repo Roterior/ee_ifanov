@@ -1,6 +1,5 @@
-<%@ page import="java.util.List" %>
-<%@ page import="com.accenture.flowershop.fe.dto.PurchaseDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,49 +34,23 @@
             </tr>
             </thead>
             <tbody>
-            <%
-                List<PurchaseDTO> purchases = (List<PurchaseDTO>) session.getAttribute("purchaseListAll");
-                if (purchases != null) {
-                    for (PurchaseDTO purchase: purchases) {
-            %>
-            <tr>
-                <form action="/admin" method="get">
-                    <input type="hidden" readonly name="id" value="<%=purchase.getId()%>">
-                    <td>
-                        <h5 class="font-weight-bolder"><kbd><%=purchase.getClientLogin()%></kbd></h5>
-                        <input style="width: 80px;" type="hidden" readonly value="<%=purchase.getClientLogin()%>" name="login">
-                    </td>
-                    <td>
-                        <h5><kbd><%=purchase.getTotalPrice()%></kbd></h5>
-                        <input style="width: 80px;" type="hidden" readonly value="<%=purchase.getTotalPrice()%>" name="summary">
-                    </td>
-                    <td>
-                        <h5><kbd><%=purchase.getCreateDate()%></kbd></h5>
-                        <input style="width: 90px" type="hidden" readonly value="<%=purchase.getCreateDate()%>" name="createdate">
-                    </td>
-                    <td>
-                        <h5><kbd><%=purchase.getCloseDate() == null ? "-" : purchase.getCloseDate()%></kbd></h5>
-                        <input style="width: 90px" type="hidden" readonly value="<%=purchase.getCloseDate() == null ? "-" : purchase.getCloseDate()%>" name="closedate">
-                    </td>
-                    <td>
-                        <h5><kbd><%=purchase.getStatus()%></kbd></h5>
-                        <input style="width: 56px" type="hidden" readonly value="<%=purchase.getStatus()%>" name="status" >
-                    </td>
-                    <%
-                        if (purchase.getStatus().equals("paid")) {
-                    %>
-                    <td>
-                        <input class="btn btn-success btn-sm btn-outline-dark" type="submit" name="act" value="close">
-                    </td>
-                    <%
-                        }
-                    %>
-                </form>
-            </tr>
-            <%
-                    }
-                }
-            %>
+                <c:forEach var="item" items='${purchaseListAll}' >
+                    <tr class="font-weight-bold">
+                        <td><kbd>${item.clientLogin}</kbd></td>
+                        <td><kbd>${item.totalPrice}</kbd></td>
+                        <td><kbd>${item.createDate}</kbd></td>
+                        <td><kbd>${item.closeDate}</kbd></td>
+                        <td><kbd>${item.status}</kbd></td>
+                        <c:if test="${item.getStatus() eq 'paid'}">
+                            <td>
+                                <form action="admin" method="get">
+                                    <input type="hidden" name="id" value="${item.id}">
+                                    <input class="btn btn-success btn-sm btn-outline-dark" type="submit" name="act" value="close">
+                                </form>
+                            </td>
+                        </c:if>
+                    </tr>
+                </c:forEach>
             </tbody>
         </table>
     </div>

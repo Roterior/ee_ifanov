@@ -29,8 +29,7 @@ public class XMLConverter {
         this.unmarshaller = unmarshaller;
     }
 
-    public void convertFromObjectToXML(Object object, String filepath)
-            throws IOException {
+    public void convertFromObjectToXML(Object object, String filepath) throws IOException {
 
         FileOutputStream os = null;
         try {

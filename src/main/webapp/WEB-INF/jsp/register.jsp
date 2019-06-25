@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,10 +59,9 @@
             <a href="login" class="btn btn-dark">Back</a>
             <input id="btnReg" type="submit" class="btn btn-dark" value="Create"/>
             <div><kbd>* - Fields with sign are optional</kbd></div>
-            <%
-                String error = request.getAttribute("error2") != null ? request.getAttribute("error2").toString() : null;
-                if (error != null) out.print("<div><kbd class=\"text-danger\">" + error + "</kbd></div>");
-            %>
+            <c:if test="${error2 ne null}">
+                <div><kbd class="text-danger">${error2}</kbd></div>
+            </c:if>
         </form>
     </div>
 </body>

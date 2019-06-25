@@ -30,39 +30,38 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         ClientDTO clientDTO = (ClientDTO) session.getAttribute("client");
-        if (clientDTO == null) {
-            req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
-        } else {
-            resp.sendRedirect("/");
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
-        ClientDTO clientDTO = null;
-
-        String act = req.getParameter("act");
-        if (act.equals("Login")) {
-            clientDTO = mapToClientDTO(clientService.login(login, password));
-        }
 
         if (clientDTO != null) {
-            session.setAttribute("client", clientDTO);
-            req.removeAttribute("error");
-
-            if (clientDTO.getRole() != null && clientDTO.getRole().equals("admin")) {
-                resp.sendRedirect("/admin");
-            }
-            else {
-                resp.sendRedirect("/");
-            }
+            resp.sendRedirect("/");
         }
         else {
-            req.setAttribute("error", "Login or Password wrong!");
-            req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+            String act = req.getParameter("act") != null ? req.getParameter("act") : "";
+
+            if (act.equals("Login")) {
+                String login = req.getParameter("login");
+                String password = req.getParameter("password");
+
+                clientDTO = mapToClientDTO(clientService.login(login, password));
+
+                if (clientDTO != null) {
+                    session.setAttribute("client", clientDTO);
+                    session.removeAttribute("error");
+
+                    if (clientDTO.getRole() != null && clientDTO.getRole().equals("admin")) {
+                        resp.sendRedirect("/admin");
+                    }
+                    else {
+                        resp.sendRedirect("/");
+                    }
+                }
+                else {
+                    session.setAttribute("error", "Login or Password wrong!");
+                    resp.sendRedirect("/login");
+                }
+            }
+            else {
+                req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+            }
         }
     }
 

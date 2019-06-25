@@ -4,11 +4,6 @@
          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
 
-<!--  <context-param>-->
-<!--    <param-name>contextConfigLocation</param-name>-->
-<!--    <param-value>/jmsContext.xml</param-value>-->
-<!--  </context-param>-->
-
   <context-param>
     <param-name>contextClass</param-name>
     <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
@@ -28,14 +23,13 @@
     <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>cxf</servlet-name>
     <url-pattern>/ws/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>jersey-serlvet</servlet-name>
+    <servlet-name>jersey-servlet</servlet-name>
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
@@ -43,9 +37,8 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
-
   <servlet-mapping>
-    <servlet-name>jersey-serlvet</servlet-name>
+    <servlet-name>jersey-servlet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
 

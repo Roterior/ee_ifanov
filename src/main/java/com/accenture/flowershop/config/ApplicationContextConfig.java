@@ -42,4 +42,11 @@ public class ApplicationContextConfig {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
         return connectionFactory;
     }
+
+    @Bean
+    public RequestListener requestListener() {
+        RequestListener requestListener = new RequestListener();
+        requestListener.start();
+        return requestListener;
+    }
 }
